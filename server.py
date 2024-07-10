@@ -89,7 +89,7 @@ def merge_segments_into_file(segments, file_name):
         return "FAIL"
 
 
-def upload_file(file_name, conn):
+def upload_file(file_name, owner, conn):
     num_of_segments = int(conn.recv(SIZE).decode(FORMAT))
     segments = [None] * num_of_segments
     global RECEIVE
