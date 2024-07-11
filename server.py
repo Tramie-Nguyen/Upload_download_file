@@ -133,7 +133,7 @@ def handle_client(conn, addr):
                 print("[DISCONNECT] client {} is disconnected ".format(addr))
                 break
     except Exception as e:
-        print(f"[DISCONNECT] client {addr} is disconnected: {e}")
+        print(f"[DISCONNECT] client {addr} is disconnected ")
     conn.close()
 
 

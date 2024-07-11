@@ -44,7 +44,7 @@ class HomePage_w(QMainWindow):
 
     def append_file(self, file_name, owner):
         current_files = self.model_upload.stringList()
-        current_files.append(f"{file_name} (Owner: {owner})")
+        current_files.append(f"{file_name}")
         self.model_upload.setStringList(current_files)
         file_col.insert_one({"file_name": file_name, "owner": owner})
 
