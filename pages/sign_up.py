@@ -1,5 +1,6 @@
 from PyQt6 import uic
 from PyQt6.QtWidgets import QMainWindow, QMessageBox
+from PyQt6.QtCore import pyqtSignal
 
 from db import connect_database
 
@@ -7,22 +8,11 @@ ignore_message, User, file_col = connect_database()
 
 
 class SignUp_w(QMainWindow):
+    sign_up_success = pyqtSignal()
 
     def __init__(self):
         super(SignUp_w, self).__init__()
         uic.loadUi("templates/sign_up.ui", self)
-        self.signUpButton.clicked.connect(self.handle_sign_up)
-
-    def handle_sign_up(self):
-        name = self.newUserName.text()
-        pw = self.newUserPassword.text()
-        if User.find_one({"name": name}):
-            self.show_error_name_window()
-
-        else:
-            data = {"name": name, "password": pw}
-            User.insert_one(data)
-            self.show_success_window()
 
     def show_error_name_window(self):
         error_name = QMessageBox()

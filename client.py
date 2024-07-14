@@ -20,8 +20,6 @@ PATH = ""
 CHECK = []
 RECEIVE = []
 
-if not os.path.exists(CLIENT_DATA_PATH):
-    os.makedirs(CLIENT_DATA_PATH)
 
 print("CLIENT SIDE:")
 client_s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -33,12 +31,42 @@ except:
     sys.exit()
 
 
-def show_upload_fail_w():
-    error_dialog = QMessageBox()
-    error_dialog.setIcon(QMessageBox.Icon.Warning)
-    error_dialog.setText("UPLOAD FILE FAIL !!!")
-    error_dialog.setWindowTitle("Upload Error")
-    error_dialog.exec()
+def handle_login():
+    client_name = login_page.userName.text()
+    client_pw = login_page.userPassword.text()
+    client_data = f"Login/{client_name}/{client_pw}"
+    client_s.sendall(client_data.encode(FORMAT))
+    login_result = client_s.recv(SIZE).decode(FORMAT)
+
+    if login_result == "Login success":
+        login_page.show_success_login_window()
+        login_page.login_successful.emit()
+    elif login_result == "Wrong password":
+        login_page.userPassword.setText("")
+        login_page.userName.setText("")
+        login_page.show_wrong_password_window()
+    else:
+        login_page.userPassword.setText("")
+        login_page.userName.setText("")
+        login_page.show_error_login_window()
+
+
+def handle_sign_up():
+    client_new_name = signup_page.newUserName.text()
+    client_new_pw = signup_page.newUserPassword.text()
+    client_data = f"SignUp/{client_new_name}/{client_new_pw}"
+    client_s.sendall(client_data.encode(FORMAT))
+    sign_up_result = client_s.recv(SIZE).decode(FORMAT)
+
+    if sign_up_result == "Already has this name":
+        signup_page.show_error_name_window()
+        signup_page.newUserName.setText("")
+        signup_page.newUserPassword.setText("")
+    else:
+        signup_page.show_success_window()
+        signup_page.newUserName.setText("")
+        signup_page.newUserPassword.setText("")
+        signup_page.sign_up_success.emit()
 
 
 def get_unique_filename_in_server_data(file_name):
@@ -83,6 +111,28 @@ def click_handler():
         print("User canceled selecting file")
 
 
+def upload_file(file_path, file_name):
+    send_file = f"Upload/{file_name}"
+    client_s.send(send_file.encode(FORMAT))
+    segments = divide_file_into_segments(file_path)
+    # check if all segments have been sent or not
+    while False in CHECK:
+        create_segment_thread(segments)
+
+    send_upload_full_segments = "Upload all segments successfully"
+    print(send_upload_full_segments)
+    client_s.sendall(send_upload_full_segments.encode(FORMAT))
+    merge_result = client_s.recv(SIZE).decode(FORMAT)
+    if merge_result == "SUCCESS":
+        owner = login_page.userName.text()
+        home_page2.append_file(file_name, owner)
+        home_page2.fileName.setText("")
+        show_upload_success_w()
+    else:
+        show_upload_fail_w()
+        home_page2.fileName.setText("")
+
+
 def divide_file_into_segments(file_path):
     with open(file_path, "rb") as f:
         file_data = f.read()
@@ -122,28 +172,9 @@ def send_segment(segment_index, segment):
     time.sleep(0.1)
 
 
-def upload_file(file_path, file_name):
-    send_file = f"Upload/{file_name}"
-    client_s.send(send_file.encode(FORMAT))
-    segments = divide_file_into_segments(file_path)
-    while False in CHECK:
-        create_segment_thread(segments)
-    send_upload_full_segments = "Upload all segments successfully"
-    print(send_upload_full_segments)
-    client_s.sendall(send_upload_full_segments.encode(FORMAT))
-    merge_result = client_s.recv(SIZE).decode(FORMAT)
-    if merge_result == "SUCCESS":
-        owner = login_page.userName.text()
-        home_page2.append_file(file_name, owner)
-        home_page2.fileName.setText("")
-    else:
-        show_upload_fail_w()
-        home_page2.fileName.setText("")
-
-
 def download_file(file_name):
     if file_name == "":
-        show_error()
+        show_error_file_name_download()
     else:
         send_request = f"Download/{file_name}"
         client_s.sendall(send_request.encode(FORMAT))
@@ -159,6 +190,7 @@ def download_file(file_name):
             RECEIVE = [0] * num_of_segments
             segments = [None] * num_of_segments
             signal = 0
+            # check if receive all segments or not
             while signal == 0:
                 signal = recv_segment(segments)
             print("[RECEIVE ALL SEGMENTS]")
@@ -219,7 +251,7 @@ def show_download_fail(file_name):
     download_fail.exec()
 
 
-def show_error():
+def show_error_file_name_download():
     error_dialog = QMessageBox()
     error_dialog.setIcon(QMessageBox.Icon.Warning)
     error_dialog.setText("User forget to write file's name to download")
@@ -235,6 +267,22 @@ def show_file_not_exist(file_name):
     f_not_exist.exec()
 
 
+def show_upload_success_w(file_name):
+    upload_success = QMessageBox()
+    upload_success.setIcon(QMessageBox.Icon.Information)
+    upload_success.setText(f"Upload file {file_name} successfully !!!")
+    upload_success.setWindowTitle("Upload success")
+    upload_success.exec()
+
+
+def show_upload_fail_w():
+    error_dialog = QMessageBox()
+    error_dialog.setIcon(QMessageBox.Icon.Warning)
+    error_dialog.setText("UPLOAD FILE FAIL !!!")
+    error_dialog.setWindowTitle("Upload Error")
+    error_dialog.exec()
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     login_page = login.Login_w()
@@ -248,9 +296,12 @@ if __name__ == "__main__":
     stack_widget.addWidget(home_page2)
 
     # Handle switch page
+    login_page.loginButton.clicked.connect(handle_login)
     login_page.signUpButton.clicked.connect(lambda: stack_widget.setCurrentIndex(1))
-    signup_page.loginButton.clicked.connect(lambda: stack_widget.setCurrentIndex(0))
     login_page.login_successful.connect(lambda: stack_widget.setCurrentIndex(2))
+    signup_page.signUpButton.clicked.connect(handle_sign_up)
+    signup_page.loginButton.clicked.connect(lambda: stack_widget.setCurrentIndex(0))
+    signup_page.sign_up_success.connect(lambda: stack_widget.setCurrentIndex(0))
     home_page2.chooseFileButton.clicked.connect(click_handler)
     home_page2.uploadButton.clicked.connect(
         lambda: upload_file(PATH, home_page2.fileName.text())
@@ -261,7 +312,7 @@ if __name__ == "__main__":
 
     stack_widget.setCurrentIndex(0)
     stack_widget.setFixedHeight(600)
-    stack_widget.setFixedWidth(750)
+    stack_widget.setFixedWidth(850)
     stack_widget.show()
 
     sys.exit(app.exec())

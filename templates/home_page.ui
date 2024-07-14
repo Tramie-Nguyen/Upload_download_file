@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>849</width>
+    <height>608</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>190</x>
+      <x>230</x>
       <y>-80</y>
       <width>491</width>
       <height>241</height>
@@ -37,15 +37,15 @@
    <widget class="QPushButton" name="chooseFileButton">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>430</y>
+      <x>180</x>
+      <y>450</y>
       <width>131</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>11</pointsize>
+      <pointsize>12</pointsize>
      </font>
     </property>
     <property name="text">
@@ -55,17 +55,17 @@
    <widget class="QPushButton" name="downloadButton">
     <property name="geometry">
      <rect>
-      <x>400</x>
+      <x>470</x>
       <y>510</y>
-      <width>181</width>
+      <width>121</width>
       <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
+      <weight>50</weight>
+      <bold>false</bold>
      </font>
     </property>
     <property name="text">
@@ -75,43 +75,28 @@
    <widget class="QPushButton" name="uploadButton">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>270</x>
       <y>510</y>
-      <width>181</width>
+      <width>111</width>
       <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <pointsize>12</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
+      <weight>50</weight>
+      <bold>false</bold>
      </font>
     </property>
     <property name="text">
      <string>Upload</string>
     </property>
    </widget>
-   <widget class="QListView" name="upload_list">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>110</y>
-      <width>271</width>
-      <height>261</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="fileName">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>431</y>
+      <x>320</x>
+      <y>450</y>
       <width>341</width>
       <height>41</height>
      </rect>
@@ -137,69 +122,163 @@
    <widget class="QGroupBox" name="groupBox_3">
     <property name="geometry">
      <rect>
-      <x>380</x>
+      <x>470</x>
       <y>90</y>
-      <width>321</width>
-      <height>301</height>
+      <width>341</width>
+      <height>331</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>9</pointsize>
+      <pointsize>10</pointsize>
      </font>
     </property>
+    <property name="mouseTracking">
+     <bool>false</bool>
+    </property>
+    <property name="tabletTracking">
+     <bool>false</bool>
+    </property>
+    <property name="toolTipDuration">
+     <number>-1</number>
+    </property>
     <property name="title">
-     <string>DOWNLOAD FILES</string>
+     <string>  DOWNLOAD FILES</string>
     </property>
     <widget class="QListView" name="download_list">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>20</y>
+       <x>30</x>
+       <y>30</y>
        <width>291</width>
-       <height>261</height>
+       <height>281</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
+     <property name="tabletTracking">
+      <bool>true</bool>
      </property>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="groupBox">
+   <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>90</y>
-      <width>301</width>
-      <height>301</height>
+      <x>0</x>
+      <y>-90</y>
+      <width>891</width>
+      <height>681</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>9</pointsize>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>../../../../Downloads/04b9764b5c98d389dc22d61834dfef0c.jpg</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QListView" name="upload_list">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>120</y>
+      <width>291</width>
+      <height>281</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="mouseTracking">
+     <bool>true</bool>
+    </property>
+    <property name="tabletTracking">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_4">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>90</y>
+      <width>341</width>
+      <height>331</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
      </font>
     </property>
     <property name="title">
-     <string>UPLOAD FILES</string>
+     <string>  UPLOAD FILES</string>
     </property>
-    <widget class="QGroupBox" name="groupBox_2">
+    <widget class="Line" name="line_5">
      <property name="geometry">
       <rect>
-       <x>360</x>
+       <x>-10</x>
        <y>10</y>
-       <width>301</width>
-       <height>301</height>
+       <width>16</width>
+       <height>321</height>
       </rect>
      </property>
-     <property name="title">
-      <string>UPLOAD FILES</string>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
     </widget>
    </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>10</y>
+      <width>521</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>../../../../Downloads/fa4daed5-4f71-419d-9a3a-d2a2429d5731.jpg</pixmap>
+    </property>
+   </widget>
+   <zorder>label_2</zorder>
+   <zorder>label_4</zorder>
+   <zorder>label</zorder>
+   <zorder>chooseFileButton</zorder>
+   <zorder>downloadButton</zorder>
+   <zorder>uploadButton</zorder>
+   <zorder>fileName</zorder>
+   <zorder>groupBox_3</zorder>
+   <zorder>upload_list</zorder>
+   <zorder>groupBox_4</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>849</width>
      <height>26</height>
     </rect>
    </property>
