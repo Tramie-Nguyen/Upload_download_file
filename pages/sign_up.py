@@ -2,10 +2,6 @@ from PyQt6 import uic
 from PyQt6.QtWidgets import QMainWindow, QMessageBox
 from PyQt6.QtCore import pyqtSignal
 
-from db import connect_database
-
-ignore_message, User, file_col = connect_database()
-
 
 class SignUp_w(QMainWindow):
     sign_up_success = pyqtSignal()

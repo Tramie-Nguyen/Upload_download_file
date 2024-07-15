@@ -124,10 +124,9 @@ def upload_file(file_path, file_name):
     client_s.sendall(send_upload_full_segments.encode(FORMAT))
     merge_result = client_s.recv(SIZE).decode(FORMAT)
     if merge_result == "SUCCESS":
-        owner = login_page.userName.text()
-        home_page2.append_file(file_name, owner)
+        home_page2.append_file(file_name)
         home_page2.fileName.setText("")
-        show_upload_success_w()
+        show_upload_success_w(file_name)
     else:
         show_upload_fail_w()
         home_page2.fileName.setText("")

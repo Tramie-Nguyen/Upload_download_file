@@ -17,7 +17,7 @@ CLIENT_DATA_PATH = "Client_data"
 RECEIVE = []
 CHECK = []
 
-db_message, user_col, file_col = connect_database()
+db_message, user_col = connect_database()
 print(db_message)
 
 if not os.path.exists(SERVER_DATA_PATH):

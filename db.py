@@ -11,7 +11,6 @@ def connect_database():
         myClient = pymongo.MongoClient(os.getenv("MONGODB_URL"))
         db = myClient["send_file_project"]
         user_col = db["users"]
-        file_col = db["files"]
-        return "Connected to MongoDB successfully!", user_col, file_col
+        return "Connected to MongoDB successfully!", user_col
     except pymongo.errors.ConnectionFailure as e:
-        return "Failed to connect to MongoDB", None, None
+        return "Failed to connect to MongoDB", None
