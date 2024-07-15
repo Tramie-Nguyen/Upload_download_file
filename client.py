@@ -253,7 +253,7 @@ def show_download_fail(file_name):
 def show_error_file_name_download():
     error_dialog = QMessageBox()
     error_dialog.setIcon(QMessageBox.Icon.Warning)
-    error_dialog.setText("User forget to write file's name to download")
+    error_dialog.setText("User forget to choose file to download")
     error_dialog.setWindowTitle("File error")
     error_dialog.exec()
 
