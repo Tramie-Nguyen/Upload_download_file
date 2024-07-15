@@ -1,8 +1,8 @@
 import os
 from PyQt6 import uic
-from PyQt6.QtWidgets import QMainWindow, QListView
+from PyQt6.QtWidgets import QMainWindow, QListView, QScrollBar
 from PyQt6.QtCore import QStringListModel, Qt
-from db import connect_database
+from PyQt6.QtGui import QFont
 
 
 FORMAT = "utf-8"
@@ -16,6 +16,22 @@ class HomePage_w(QMainWindow):
     def __init__(self):
         super(HomePage_w, self).__init__()
         uic.loadUi("templates/home_page.ui", self)
+        font = QFont()
+        font.setBold(True)
+        font.setPointSize(25)
+        self.label.setFont(font)
+
+        font2 = QFont()
+        font2.setPointSize(14)
+        self.label_3.setFont(font2)
+        self.label_5.setFont(font2)
+
+        font3 = QFont()
+        font3.setBold(True)
+        font3.setPointSize(14)
+        self.chooseFileButton.setFont(font3)
+        self.uploadButton.setFont(font3)
+        self.downloadButton.setFont(font3)
 
         # Initialize the QListView and QStringListModel for server files
         self.upload_list = self.findChild(QListView, "upload_list")
@@ -23,10 +39,20 @@ class HomePage_w(QMainWindow):
         self.upload_list.setModel(self.model_upload)
         self.load_initial_server_data_files()
 
+        self.upload_list.setVerticalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOn
+        )
+
+        self.load_initial_server_data_files()
+
         # Initialize the QListView and QStringListModel for client files
         self.download_list = self.findChild(QListView, "download_list")
         self.model_download = QStringListModel()
         self.download_list.setModel(self.model_download)
+        self.load_initial_client_data_files()
+        self.download_list.setVerticalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOn
+        )
         self.load_initial_client_data_files()
 
         # Connect the click event of the upload list to the handler

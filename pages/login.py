@@ -1,6 +1,7 @@
 from PyQt6 import uic
 from PyQt6.QtWidgets import QMessageBox, QMainWindow
 from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtGui import QFont
 
 
 class Login_w(QMainWindow):
@@ -9,6 +10,17 @@ class Login_w(QMainWindow):
     def __init__(self):
         super(Login_w, self).__init__()
         uic.loadUi("templates/login.ui", self)
+
+        font = QFont()
+        font.setBold(True)
+        font.setPointSize(25)
+        self.label.setFont(font)
+
+        font2 = QFont()
+        font2.setBold(True)
+        font2.setPointSize(13)
+        self.label_2.setFont(font2)
+        self.label_3.setFont(font2)
 
     def show_error_login_window(self):
         error_dialog = QMessageBox()

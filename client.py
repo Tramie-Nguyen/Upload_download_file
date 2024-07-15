@@ -54,6 +54,8 @@ def handle_login():
 def handle_sign_up():
     client_new_name = signup_page.newUserName.text()
     client_new_pw = signup_page.newUserPassword.text()
+    if client_new_name == "" or client_new_pw == " ":
+        show_error_sign_up()
     client_data = f"SignUp/{client_new_name}/{client_new_pw}"
     client_s.sendall(client_data.encode(FORMAT))
     sign_up_result = client_s.recv(SIZE).decode(FORMAT)
@@ -244,7 +246,7 @@ def show_download_success(file_name):
 
 def show_download_fail(file_name):
     download_fail = QMessageBox()
-    download_fail.setIcon(QMessageBox.Icon.Warning)
+    download_fail.setIcon(QMessageBox.Icon.Critical)
     download_fail.setText(f"Fail to download file: {file_name}")
     download_fail.setWindowTitle("Download Error")
     download_fail.exec()
@@ -276,10 +278,18 @@ def show_upload_success_w(file_name):
 
 def show_upload_fail_w():
     error_dialog = QMessageBox()
-    error_dialog.setIcon(QMessageBox.Icon.Warning)
+    error_dialog.setIcon(QMessageBox.Icon.Critical)
     error_dialog.setText("UPLOAD FILE FAIL !!!")
     error_dialog.setWindowTitle("Upload Error")
     error_dialog.exec()
+
+
+def show_error_sign_up():
+    empty_text = QMessageBox()
+    empty_text.setIcon(QMessageBox.Icon.Critical)
+    empty_text.setText("Invalid account \n(empty name or password)")
+    empty_text.setWindowTitle("SignUp Error")
+    empty_text.exec()
 
 
 if __name__ == "__main__":

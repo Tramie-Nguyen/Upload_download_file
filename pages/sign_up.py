@@ -1,6 +1,7 @@
 from PyQt6 import uic
 from PyQt6.QtWidgets import QMainWindow, QMessageBox
 from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtGui import QFont
 
 
 class SignUp_w(QMainWindow):
@@ -9,6 +10,16 @@ class SignUp_w(QMainWindow):
     def __init__(self):
         super(SignUp_w, self).__init__()
         uic.loadUi("templates/sign_up.ui", self)
+        font = QFont()
+        font.setBold(True)
+        font.setPointSize(22)
+        self.label.setFont(font)
+
+        font2 = QFont()
+        font2.setBold(True)
+        font2.setPointSize(13)
+        self.label_2.setFont(font2)
+        self.label_3.setFont(font2)
 
     def show_error_name_window(self):
         error_name = QMessageBox()

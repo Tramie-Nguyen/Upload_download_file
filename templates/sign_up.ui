@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>850</width>
-    <height>601</height>
+    <height>963</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,19 +36,22 @@
    <widget class="QPushButton" name="loginButton">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>260</x>
       <y>390</y>
-      <width>271</width>
+      <width>321</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="autoFillBackground">
      <bool>true</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 70, 212);</string>
     </property>
     <property name="text">
      <string>ALREADY HAVE ACCOUNT ?</string>
@@ -78,16 +81,20 @@
       <x>370</x>
       <y>330</y>
       <width>101</width>
-      <height>31</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="autoFillBackground">
-     <bool>true</bool>
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(0, 218, 0);
+color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
      <string>SIGN UP</string>
@@ -116,8 +123,8 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>60</y>
+      <x>220</x>
+      <y>70</y>
       <width>611</width>
       <height>121</height>
      </rect>
