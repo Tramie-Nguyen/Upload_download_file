@@ -20,14 +20,17 @@ CHECK = []
 db_message, user_col = connect_database()
 print(db_message)
 
-if not os.path.exists(SERVER_DATA_PATH):
-    os.makedirs(SERVER_DATA_PATH)
 
-if not os.path.exists(CLIENT_DATA_PATH):
-    os.makedirs(CLIENT_DATA_PATH)
+def check_file_exist_or_not():
+    if not os.path.exists(SERVER_DATA_PATH):
+        os.makedirs(SERVER_DATA_PATH)
+
+    if not os.path.exists(CLIENT_DATA_PATH):
+        os.makedirs(CLIENT_DATA_PATH)
 
 
 def main():
+    check_file_exist_or_not()
     print("SERVER SIDE:")
     server_s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     print("[STARTING] Server is starting...")
