@@ -14,19 +14,16 @@ PORT = 4567
 ADDR = (IP, PORT)
 FORMAT = "utf-8"
 SIZE = 1024
-SERVER_DATA_PATH = "Server_data"
-CLIENT_DATA_PATH = "Client_data"
 PATH = ""
-CHECK = []
-RECEIVE = []
-
+ACK_MSG = "ACK"
+NAK_MSG = "NAK"
 
 print("CLIENT SIDE:")
 client_s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try:
     client_s.connect(ADDR)
-except:
-    print("ERROR! Can't connect to server side")
+except Exception as e:
+    print(f"ERROR! Can't connect to server: {e}")
     client_s.close()
     sys.exit()
 
@@ -34,6 +31,14 @@ except:
 def handle_login():
     client_name = login_page.userName.text()
     client_pw = login_page.userPassword.text()
+    check_name = client_name.strip()
+    check_pw = client_pw.strip()
+
+    if not check_name or not check_pw:
+        login_page.show_empty_name_or_password()
+        login_page.userPassword.setText("")
+        login_page.userName.setText("")
+        return
     client_data = f"Login/{client_name}/{client_pw}"
     client_s.sendall(client_data.encode(FORMAT))
     login_result = client_s.recv(SIZE).decode(FORMAT)
@@ -41,6 +46,7 @@ def handle_login():
     if login_result == "Login success":
         login_page.show_success_login_window()
         login_page.login_successful.emit()
+
     elif login_result == "Wrong password":
         login_page.userPassword.setText("")
         login_page.userName.setText("")
@@ -54,8 +60,13 @@ def handle_login():
 def handle_sign_up():
     client_new_name = signup_page.newUserName.text()
     client_new_pw = signup_page.newUserPassword.text()
-    if client_new_name == "" or client_new_pw == " ":
-        show_error_sign_up()
+    check_new_name = client_new_name.strip()
+    check_new_pw = client_new_pw.strip()
+    if not check_new_name or not check_new_pw:
+        signup_page.show_error_sign_up()
+        signup_page.newUserName.setText("")
+        signup_page.newUserPassword.setText("")
+        return
     client_data = f"SignUp/{client_new_name}/{client_new_pw}"
     client_s.sendall(client_data.encode(FORMAT))
     sign_up_result = client_s.recv(SIZE).decode(FORMAT)
@@ -71,30 +82,6 @@ def handle_sign_up():
         signup_page.sign_up_success.emit()
 
 
-def get_unique_filename_in_server_data(file_name):
-    base_name, extension = os.path.splitext(file_name)
-    new_name = file_name
-    count = 1
-
-    while os.path.exists(os.path.join(SERVER_DATA_PATH, new_name)):
-        new_name = f"{base_name}({count}){extension}"
-        count += 1
-
-    return new_name
-
-
-def get_unique_filename_in_client_data(file_name):
-    base_name, extension = os.path.splitext(file_name)
-    new_name = file_name
-    count = 1
-
-    while os.path.exists(os.path.join(CLIENT_DATA_PATH, new_name)):
-        new_name = f"{base_name}({count}){extension}"
-        count += 1
-
-    return new_name
-
-
 def click_handler():
     dialog = QFileDialog()
     dialog.setNameFilter("All files (*)")
@@ -104,11 +91,10 @@ def click_handler():
     if dialog_success == 1:
         selected_file_path = dialog.selectedFiles()[0]
         file_name = os.path.basename(selected_file_path)
-        file_name_after_check = get_unique_filename_in_server_data(file_name)
-        home_page2.fileName.setText(file_name_after_check)
         global PATH
         PATH = selected_file_path
-        print("fileName:", file_name_after_check)
+        home_page2.fileName.setText(file_name)
+        print("fileName:", file_name)
     else:
         print("User canceled selecting file")
 
@@ -117,123 +103,58 @@ def upload_file(file_path, file_name):
     send_file = f"Upload/{file_name}"
     client_s.send(send_file.encode(FORMAT))
     segments = divide_file_into_segments(file_path)
-    # check if all segments have been sent or not
-    while False in CHECK:
-        create_segment_thread(segments)
+    create_segment_thread(segments)
 
     send_upload_full_segments = "Upload all segments successfully"
     print(send_upload_full_segments)
-    client_s.sendall(send_upload_full_segments.encode(FORMAT))
+
     merge_result = client_s.recv(SIZE).decode(FORMAT)
+    unique_name = client_s.recv(SIZE).decode(FORMAT)
     if merge_result == "SUCCESS":
-        home_page2.append_file(file_name)
+        home_page2.append_file(unique_name)
         home_page2.fileName.setText("")
-        show_upload_success_w(file_name)
+        show_upload_success_w(unique_name)
     else:
-        show_upload_fail_w()
+        show_upload_fail_w(file_name)
         home_page2.fileName.setText("")
 
 
 def divide_file_into_segments(file_path):
     with open(file_path, "rb") as f:
         file_data = f.read()
-
     file_size = len(file_data)
     segments = [file_data[i : i + SIZE] for i in range(0, file_size, SIZE)]
-
-    global CHECK
-    CHECK = [0] * len(segments)
     client_s.sendall(f"{len(segments)}".encode(FORMAT))
-    create_segment_thread(segments)
     return segments
 
 
 def create_segment_thread(segments):
     threads = []
-
     for index, segment in enumerate(segments):
-        if CHECK[index] == 1:
-            continue
-        else:
-            t = threading.Thread(target=send_segment, args=(index, segment))
-            threads.append(t)
-            t.start()
-
+        t = threading.Thread(target=send_segment, args=(index, segment))
+        threads.append(t)
+        t.start()
     for t in threads:
         t.join()
 
 
 def send_segment(segment_index, segment):
-    client_s.sendall(f"{segment_index}".encode(FORMAT))
-    client_s.sendall(segment)
-    recv_msg = client_s.recv(SIZE).decode(FORMAT)
-    key, index = recv_msg.split(" ")
-    if key == "ack" and int(index) == segment_index:
-        CHECK[segment_index] = 1
-    time.sleep(0.1)
+    while True:
+        client_s.sendall(f"{segment_index}".encode(FORMAT))
+        client_s.sendall(segment)
+        recv_msg = client_s.recv(SIZE).decode(FORMAT)
+        key, index = recv_msg.split(" ")
+        if key == "ack" and int(index) == segment_index:
+            print(f"ack {segment_index}")
+            break
+        else:
+            print(f"nak {segment_index}")
+            time.sleep(0.5)
+            continue
 
 
 def download_file(file_name):
-    if file_name == "":
-        show_error_file_name_download()
-    else:
-        send_request = f"Download/{file_name}"
-        client_s.sendall(send_request.encode(FORMAT))
-        num_of_segments = client_s.recv(SIZE).decode(FORMAT)
-        unique_file_name = get_unique_filename_in_client_data(file_name)
-        if num_of_segments == "CAN'T FOUND":
-            show_file_not_exist(file_name)
-            home_page2.fileName.setText("")
-            return
-        else:
-            num_of_segments = int(num_of_segments)
-            global RECEIVE
-            RECEIVE = [0] * num_of_segments
-            segments = [None] * num_of_segments
-            signal = 0
-            # check if receive all segments or not
-            while signal == 0:
-                signal = recv_segment(segments)
-            print("[RECEIVE ALL SEGMENTS]")
-
-            merge_result = merge_segments_into_file(segments, unique_file_name)
-            client_s.sendall(merge_result.encode(FORMAT))
-            if merge_result == "SUCCESS":
-                show_download_success(file_name)
-                home_page2.append_downloaded_file(unique_file_name)
-                home_page2.fileName.setText("")
-
-            else:
-                show_download_fail(file_name)
-                home_page2.fileName.setText("")
-
-
-def recv_segment(segments):
-    segment_index = client_s.recv(SIZE).decode(FORMAT)
-    if segment_index == "Download all segments successfully":
-        print(segment_index)
-        return 1
-    segment_index = int(segment_index)
-    if RECEIVE[segment_index] == 0:
-        segments[segment_index] = client_s.recv(SIZE)
-    else:
-        ignore = client_s.recv(SIZE)
-    client_s.sendall(f"ack {segment_index}".encode(FORMAT))
-    RECEIVE[segment_index] = 1
-    return 0
-
-
-def merge_segments_into_file(segments, file_name):
-    try:
-        file_path = os.path.join(CLIENT_DATA_PATH, file_name)
-        with open(file_path, "wb") as f:
-            for segment in segments:
-                f.write(segment)
-        print("[MERGE SUCCESS] Merged segments into file successfully")
-        return "SUCCESS"
-    except Exception as e:
-        print(f"[MERGE FAIL] Merging segments into file failed: {e}")
-        return "FAIL"
+    pass
 
 
 def show_download_success(file_name):
@@ -276,20 +197,12 @@ def show_upload_success_w(file_name):
     upload_success.exec()
 
 
-def show_upload_fail_w():
+def show_upload_fail_w(file_name):
     error_dialog = QMessageBox()
     error_dialog.setIcon(QMessageBox.Icon.Critical)
-    error_dialog.setText("UPLOAD FILE FAIL !!!")
+    error_dialog.setText(f"Upload file {file_name} fail !!!")
     error_dialog.setWindowTitle("Upload Error")
     error_dialog.exec()
-
-
-def show_error_sign_up():
-    empty_text = QMessageBox()
-    empty_text.setIcon(QMessageBox.Icon.Critical)
-    empty_text.setText("Invalid account \n(empty name or password)")
-    empty_text.setWindowTitle("SignUp Error")
-    empty_text.exec()
 
 
 if __name__ == "__main__":

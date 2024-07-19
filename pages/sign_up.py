@@ -34,3 +34,10 @@ class SignUp_w(QMainWindow):
         success.setText("SIGN UP SUCCESSFULLY !!!")
         success.setWindowTitle("signUp success")
         success.exec()
+
+    def show_error_sign_up(self):
+        error_signup = QMessageBox()
+        error_signup.setIcon(QMessageBox.Icon.Warning)
+        error_signup.setText("Sign up fail ! \n Invalid account")
+        error_signup.setWindowTitle("SignUp Error")
+        error_signup.exec()

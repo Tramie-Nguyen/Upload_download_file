@@ -24,7 +24,7 @@ class Login_w(QMainWindow):
 
     def show_error_login_window(self):
         error_dialog = QMessageBox()
-        error_dialog.setIcon(QMessageBox.Icon.Warning)
+        error_dialog.setIcon(QMessageBox.Icon.Critical)
         error_dialog.setText("LOGIN FAIL !!! \n ACCOUNT DOESN'T EXIST")
         error_dialog.setWindowTitle("Login Error")
         error_dialog.exec()
@@ -42,3 +42,10 @@ class Login_w(QMainWindow):
         wrong_pw.setText("WRONG PASSWORD !!!")
         wrong_pw.setWindowTitle("wrong password")
         wrong_pw.exec()
+
+    def show_empty_name_or_password(self):
+        empty_text = QMessageBox()
+        empty_text.setIcon(QMessageBox.Icon.Warning)
+        empty_text.setText("User account is not available")
+        empty_text.setWindowTitle("Login error")
+        empty_text.exec()
