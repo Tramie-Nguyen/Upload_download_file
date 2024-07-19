@@ -100,6 +100,15 @@ def click_handler():
 
 
 def upload_file(file_path, file_name):
+    if (not file_name.strip() or file_name == "") and file_path == "":
+        show_error_choose_file()
+        home_page2.fileName.setText("")
+        return
+    elif (not file_name.strip() or file_name == "") and file_path != "":
+        show_error_file_name_upload()
+        home_page2.fileName.setText("")
+        return
+
     send_file = f"Upload/{file_name}"
     client_s.send(send_file.encode(FORMAT))
     segments = divide_file_into_segments(file_path)
@@ -181,12 +190,20 @@ def show_error_file_name_download():
     error_dialog.exec()
 
 
-def show_file_not_exist(file_name):
-    f_not_exist = QMessageBox()
-    f_not_exist.setIcon(QMessageBox.Icon.Warning)
-    f_not_exist.setText(f"File {file_name} doesn't exist")
-    f_not_exist.setWindowTitle("File error")
-    f_not_exist.exec()
+def show_error_choose_file():
+    error_choose_f = QMessageBox()
+    error_choose_f.setIcon(QMessageBox.Icon.Warning)
+    error_choose_f.setText(f"User has not selected a file to upload")
+    error_choose_f.setWindowTitle("Choose file error")
+    error_choose_f.exec()
+
+
+def show_error_file_name_upload():
+    error_f_name = QMessageBox()
+    error_f_name.setIcon(QMessageBox.Icon.Warning)
+    error_f_name.setText(f"Invalid file's name")
+    error_f_name.setWindowTitle("Invalid file's name")
+    error_f_name.exec()
 
 
 def show_upload_success_w(file_name):
