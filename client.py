@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 IP = "127.0.0.1"
-PORT = 4567
+PORT = 45999
 ADDR = (IP, PORT)
 FORMAT = "utf-8"
 SIZE = 1024
