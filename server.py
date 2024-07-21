@@ -6,6 +6,7 @@ from db import connect_database
 from dotenv import load_dotenv
 
 load_dotenv()
+recv_lock = threading.Lock()
 
 IP = "127.0.0.1"
 PORT = 45999
@@ -129,11 +130,13 @@ def handle_upload(file_name, conn):
 
     signal = 0
     while signal == 0:
-        signal = recv_segment(conn, segments, num_of_segments)
+        with recv_lock:
+            signal = recv_segment(conn, segments, num_of_segments)
 
     print("[RECEIVE ALL SEGMENTS]")
     merge_result = merge_segments_into_file(segments, file_name)
     conn.sendall(merge_result.encode(FORMAT))
+    time.sleep(0.1)
     conn.sendall(unique_name.encode(FORMAT))
 
 

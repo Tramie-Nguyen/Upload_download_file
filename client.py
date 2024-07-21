@@ -8,7 +8,7 @@ from pages import login, sign_up, home_page
 from dotenv import load_dotenv
 
 load_dotenv()
-
+send_lock = threading.Lock()
 IP = "127.0.0.1"
 PORT = 45999
 ADDR = (IP, PORT)
@@ -149,17 +149,21 @@ def create_segment_thread(segments):
 
 def send_segment(segment_index, segment):
     while True:
-        client_s.sendall(f"{segment_index}".encode(FORMAT))
-        client_s.sendall(segment)
-        recv_msg = client_s.recv(SIZE).decode(FORMAT)
-        key, index = recv_msg.split(" ")
-        if key == "ack" and int(index) == segment_index:
-            print(f"ack {segment_index}")
-            break
-        else:
-            print(f"nak {segment_index}")
-            time.sleep(0.5)
-            continue
+        try:
+            with send_lock:
+                client_s.sendall(f"{segment_index}".encode(FORMAT))
+                client_s.sendall(segment)
+                recv_msg = client_s.recv(SIZE).decode(FORMAT)
+                key, index = recv_msg.split(" ")
+                if key == "ack" and int(index) == segment_index:
+                    print(f"ack {segment_index}")
+                    break
+                else:
+                    print(f"nak {segment_index}")
+                    time.sleep(0.5)
+                    continue
+        except Exception as e:
+            print(f"Error sending segment {segment_index}: {e}. Retrying...")
 
 
 def download_file(file_name):
