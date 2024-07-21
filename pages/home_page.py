@@ -1,6 +1,6 @@
 import os
 from PyQt6 import uic
-from PyQt6.QtWidgets import QMainWindow, QListView, QScrollBar
+from PyQt6.QtWidgets import QMainWindow, QListView, QMessageBox
 from PyQt6.QtCore import QStringListModel, Qt
 from PyQt6.QtGui import QFont
 
@@ -92,3 +92,59 @@ class HomePage_w(QMainWindow):
         current_downloaded_files = self.model_download.stringList()
         current_downloaded_files.append(file_name)
         self.model_download.setStringList(current_downloaded_files)
+
+    def show_download_success(self, file_name):
+        download_success = QMessageBox()
+        download_success.setIcon(QMessageBox.Icon.Information)
+        download_success.setText(f"Download file: {file_name} successfully")
+        download_success.setWindowTitle("Download Success")
+        download_success.exec()
+
+    def show_download_fail(self, file_name):
+        download_fail = QMessageBox()
+        download_fail.setIcon(QMessageBox.Icon.Critical)
+        download_fail.setText(f"Fail to download file: {file_name}")
+        download_fail.setWindowTitle("Download Error")
+        download_fail.exec()
+
+    def show_error_file_name_download(self):
+        error_dialog = QMessageBox()
+        error_dialog.setIcon(QMessageBox.Icon.Warning)
+        error_dialog.setText("User forget to choose file to download")
+        error_dialog.setWindowTitle("File error")
+        error_dialog.exec()
+
+    def file_name_not_exist(self, file_name):
+        f_not_exist = QMessageBox()
+        f_not_exist.setIcon(QMessageBox.Icon.Warning)
+        f_not_exist.setText(f"File {file_name} doesn't exist")
+        f_not_exist.setWindowTitle("File error")
+        f_not_exist.exec()
+
+    def show_error_choose_file(self):
+        error_choose_f = QMessageBox()
+        error_choose_f.setIcon(QMessageBox.Icon.Warning)
+        error_choose_f.setText(f"User has not selected a file to upload")
+        error_choose_f.setWindowTitle("Choose file error")
+        error_choose_f.exec()
+
+    def show_error_file_name_upload(self):
+        error_f_name = QMessageBox()
+        error_f_name.setIcon(QMessageBox.Icon.Warning)
+        error_f_name.setText(f"Invalid file's name")
+        error_f_name.setWindowTitle("Invalid file's name")
+        error_f_name.exec()
+
+    def show_upload_success_w(self, file_name):
+        upload_success = QMessageBox()
+        upload_success.setIcon(QMessageBox.Icon.Information)
+        upload_success.setText(f"Upload file {file_name} successfully !!!")
+        upload_success.setWindowTitle("Upload success")
+        upload_success.exec()
+
+    def show_upload_fail_w(self, file_name):
+        error_dialog = QMessageBox()
+        error_dialog.setIcon(QMessageBox.Icon.Critical)
+        error_dialog.setText(f"Upload file {file_name} fail !!!")
+        error_dialog.setWindowTitle("Upload Error")
+        error_dialog.exec()

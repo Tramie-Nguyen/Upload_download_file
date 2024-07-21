@@ -6,7 +6,8 @@ from db import connect_database
 from dotenv import load_dotenv
 
 load_dotenv()
-recv_lock = threading.Lock()
+
+server_lock = threading.Lock()
 
 IP = "127.0.0.1"
 PORT = 45999
@@ -129,8 +130,9 @@ def handle_upload(file_name, conn):
     segments = [None] * num_of_segments
 
     signal = 0
+
     while signal == 0:
-        with recv_lock:
+        with server_lock:
             signal = recv_segment(conn, segments, num_of_segments)
 
     print("[RECEIVE ALL SEGMENTS]")
@@ -147,7 +149,6 @@ def recv_segment(conn, segments, num_of_segments):
                 segment_index = int(conn.recv(SIZE).decode(FORMAT))
                 segment = conn.recv(SIZE)
                 segments[segment_index] = segment
-
                 conn.sendall(f"ack {segment_index}".encode(FORMAT))
                 break
             except:
@@ -167,8 +168,60 @@ def merge_segments_into_file(segments, file_name):
         return "FAIL"
 
 
-def handle_download(conn, file_name):
-    pass
+def handle_download(file_name, conn):
+    unique_name = get_unique_name(file_name, CLIENT_DATA_PATH)
+    file_path = os.path.join(SERVER_DATA_PATH, file_name)
+    if os.path.exists(file_path):
+        segments = divide_file_into_segments(file_path, conn)
+        create_segment_thread(segments, conn)
+
+        send_msg = "Download all segments successfully"
+        print(send_msg)
+
+        conn.sendall(unique_name.encode(FORMAT))
+
+    else:
+        error_msg = f"ERROR: File {file_name} not found"
+        print(error_msg)
+        conn.sendall("CAN'T FOUND".encode(FORMAT))
+
+
+def divide_file_into_segments(file_path, conn):
+    with open(file_path, "rb") as f:
+        file_data = f.read()
+    file_size = len(file_data)
+    segments = [file_data[i : i + SIZE] for i in range(0, file_size, SIZE)]
+    conn.sendall(f"{len(segments)}".encode(FORMAT))
+    return segments
+
+
+def create_segment_thread(segments, conn):
+    threads = []
+    for index, segment in enumerate(segments):
+        t = threading.Thread(target=send_segment, args=(index, segment, conn))
+        threads.append(t)
+        t.start()
+    for t in threads:
+        t.join()
+
+
+def send_segment(segment_index, segment, conn):
+    while True:
+        try:
+            with server_lock:
+                conn.sendall(f"{segment_index}".encode(FORMAT))
+                conn.sendall(segment)
+                recv_msg = conn.recv(SIZE).decode(FORMAT)
+                key, index = recv_msg.split(" ")
+                if key == "ack" and int(index) == segment_index:
+                    print(f"ack {segment_index}")
+                    break
+                else:
+                    print(f"nak {segment_index}")
+                    time.sleep(0.5)
+                    continue
+        except Exception as e:
+            print(f"Error sending segment {segment_index}: {e}. Retrying...")
 
 
 if __name__ == "__main__":

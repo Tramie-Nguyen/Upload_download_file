@@ -8,15 +8,16 @@ from pages import login, sign_up, home_page
 from dotenv import load_dotenv
 
 load_dotenv()
-send_lock = threading.Lock()
+client_lock = threading.Lock()
+
 IP = "127.0.0.1"
 PORT = 45999
 ADDR = (IP, PORT)
 FORMAT = "utf-8"
 SIZE = 1024
 PATH = ""
-ACK_MSG = "ACK"
-NAK_MSG = "NAK"
+CLIENT_DATA_PATH = "Client_data"
+
 
 print("CLIENT SIDE:")
 client_s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -101,11 +102,11 @@ def click_handler():
 
 def upload_file(file_path, file_name):
     if (not file_name.strip() or file_name == "") and file_path == "":
-        show_error_choose_file()
+        home_page2.show_error_choose_file()
         home_page2.fileName.setText("")
         return
     elif (not file_name.strip() or file_name == "") and file_path != "":
-        show_error_file_name_upload()
+        home_page2.show_error_file_name_upload()
         home_page2.fileName.setText("")
         return
 
@@ -122,9 +123,9 @@ def upload_file(file_path, file_name):
     if merge_result == "SUCCESS":
         home_page2.append_file(unique_name)
         home_page2.fileName.setText("")
-        show_upload_success_w(unique_name)
+        home_page2.show_upload_success_w(unique_name)
     else:
-        show_upload_fail_w(file_name)
+        home_page2.show_upload_fail_w(file_name)
         home_page2.fileName.setText("")
 
 
@@ -150,7 +151,7 @@ def create_segment_thread(segments):
 def send_segment(segment_index, segment):
     while True:
         try:
-            with send_lock:
+            with client_lock:
                 client_s.sendall(f"{segment_index}".encode(FORMAT))
                 client_s.sendall(segment)
                 recv_msg = client_s.recv(SIZE).decode(FORMAT)
@@ -167,63 +168,63 @@ def send_segment(segment_index, segment):
 
 
 def download_file(file_name):
-    pass
+    check_file_name = home_page2.fileName.text()
+    if check_file_name == "" or not check_file_name.strip():
+        home_page2.show_error_file_name_download()
+        return
+
+    send_file = f"Download/{file_name}"
+    client_s.sendall(send_file.encode(FORMAT))
+    server_msg = client_s.recv(SIZE).decode(FORMAT)
+    if server_msg == "CAN'T FOUND":
+        home_page2.file_name_not_exist(file_name)
+        return
+
+    num_of_segments = int(server_msg)
+    segments = [None] * num_of_segments
+    signal = 0
+
+    while signal == 0:
+        with client_lock:
+            signal = receive_segment(num_of_segments, segments)
+
+    print("[RECEIVE ALL SEGMENTS]")
+    unique_name = client_s.recv(SIZE).decode(FORMAT)
+    merge_result = merge_segments_into_file(segments, unique_name)
+    if merge_result == "SUCCESS":
+        home_page2.show_download_success(unique_name)
+        home_page2.append_downloaded_file(unique_name)
+        home_page2.fileName.setText("")
+    else:
+        home_page2.show_download_fail(file_name)
+        home_page2.fileName.setText("")
 
 
-def show_download_success(file_name):
-    download_success = QMessageBox()
-    download_success.setIcon(QMessageBox.Icon.Information)
-    download_success.setText(f"Download file: {file_name} successfully")
-    download_success.setWindowTitle("Download Success")
-    download_success.exec()
+def receive_segment(num_of_segments, segments):
+    for _ in range(num_of_segments):
+        while True:
+            try:
+                segment_index = int(client_s.recv(SIZE).decode(FORMAT))
+                segment = client_s.recv(SIZE)
+
+                segments[segment_index] = segment
+                client_s.sendall(f"ack {segment_index}".encode(FORMAT))
+                break
+            except:
+                client_s.sendall(f"nak {segment_index}".encode(FORMAT))
 
 
-def show_download_fail(file_name):
-    download_fail = QMessageBox()
-    download_fail.setIcon(QMessageBox.Icon.Critical)
-    download_fail.setText(f"Fail to download file: {file_name}")
-    download_fail.setWindowTitle("Download Error")
-    download_fail.exec()
-
-
-def show_error_file_name_download():
-    error_dialog = QMessageBox()
-    error_dialog.setIcon(QMessageBox.Icon.Warning)
-    error_dialog.setText("User forget to choose file to download")
-    error_dialog.setWindowTitle("File error")
-    error_dialog.exec()
-
-
-def show_error_choose_file():
-    error_choose_f = QMessageBox()
-    error_choose_f.setIcon(QMessageBox.Icon.Warning)
-    error_choose_f.setText(f"User has not selected a file to upload")
-    error_choose_f.setWindowTitle("Choose file error")
-    error_choose_f.exec()
-
-
-def show_error_file_name_upload():
-    error_f_name = QMessageBox()
-    error_f_name.setIcon(QMessageBox.Icon.Warning)
-    error_f_name.setText(f"Invalid file's name")
-    error_f_name.setWindowTitle("Invalid file's name")
-    error_f_name.exec()
-
-
-def show_upload_success_w(file_name):
-    upload_success = QMessageBox()
-    upload_success.setIcon(QMessageBox.Icon.Information)
-    upload_success.setText(f"Upload file {file_name} successfully !!!")
-    upload_success.setWindowTitle("Upload success")
-    upload_success.exec()
-
-
-def show_upload_fail_w(file_name):
-    error_dialog = QMessageBox()
-    error_dialog.setIcon(QMessageBox.Icon.Critical)
-    error_dialog.setText(f"Upload file {file_name} fail !!!")
-    error_dialog.setWindowTitle("Upload Error")
-    error_dialog.exec()
+def merge_segments_into_file(segments, file_name):
+    try:
+        file_path = os.path.join(CLIENT_DATA_PATH, file_name)
+        with open(file_path, "wb") as f:
+            for segment in segments:
+                f.write(segment)
+        print("[MERGE SUCCESS] merge segments into file successfully")
+        return "SUCCESS"
+    except:
+        print("[MERGE FAIL] merge segments into file fail")
+        return "FAIL"
 
 
 if __name__ == "__main__":
