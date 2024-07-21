@@ -153,6 +153,7 @@ def send_segment(segment_index, segment):
         try:
             with client_lock:
                 client_s.sendall(f"{segment_index}".encode(FORMAT))
+                client_s.recv(SIZE)
                 client_s.sendall(segment)
                 recv_msg = client_s.recv(SIZE).decode(FORMAT)
                 key, index = recv_msg.split(" ")
@@ -205,6 +206,7 @@ def receive_segment(num_of_segments, segments):
         while True:
             try:
                 segment_index = int(client_s.recv(SIZE).decode(FORMAT))
+                client_s.sendall("ok".encode(FORMAT))
                 segment = client_s.recv(SIZE)
 
                 segments[segment_index] = segment

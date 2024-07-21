@@ -147,6 +147,7 @@ def recv_segment(conn, segments, num_of_segments):
         while True:
             try:
                 segment_index = int(conn.recv(SIZE).decode(FORMAT))
+                conn.sendall("ok".encode(FORMAT))
                 segment = conn.recv(SIZE)
                 segments[segment_index] = segment
                 conn.sendall(f"ack {segment_index}".encode(FORMAT))
@@ -210,6 +211,7 @@ def send_segment(segment_index, segment, conn):
         try:
             with server_lock:
                 conn.sendall(f"{segment_index}".encode(FORMAT))
+                conn.recv(SIZE)
                 conn.sendall(segment)
                 recv_msg = conn.recv(SIZE).decode(FORMAT)
                 key, index = recv_msg.split(" ")
