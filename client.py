@@ -164,8 +164,8 @@ def send_segment(segment_index, segment):
                     print(f"nak {segment_index}")
                     time.sleep(0.5)
                     continue
-        except Exception as e:
-            print(f"Error sending segment {segment_index}: {e}. Retrying...")
+        except:
+            print(f"Error sending segment {segment_index}: Retrying...")
 
 
 def download_file(file_name):
@@ -187,7 +187,7 @@ def download_file(file_name):
 
     while signal == 0:
         with client_lock:
-            signal = receive_segment(num_of_segments, segments)
+            signal = recv_segment(num_of_segments, segments)
 
     print("[RECEIVE ALL SEGMENTS]")
     unique_name = client_s.recv(SIZE).decode(FORMAT)
@@ -201,7 +201,7 @@ def download_file(file_name):
         home_page2.fileName.setText("")
 
 
-def receive_segment(num_of_segments, segments):
+def recv_segment(num_of_segments, segments):
     for _ in range(num_of_segments):
         while True:
             try:
@@ -214,6 +214,8 @@ def receive_segment(num_of_segments, segments):
                 break
             except:
                 client_s.sendall(f"nak {segment_index}".encode(FORMAT))
+                print(f"Error receiving segment {segment_index}: Retrying...")
+    return 1
 
 
 def merge_segments_into_file(segments, file_name):

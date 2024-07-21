@@ -154,6 +154,8 @@ def recv_segment(conn, segments, num_of_segments):
                 break
             except:
                 conn.sendall(f"nak {segment_index}".encode(FORMAT))
+                print(f"Error receiving segment {segment_index}: Retrying...")
+    return 1
 
 
 def merge_segments_into_file(segments, file_name):
