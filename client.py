@@ -3,7 +3,7 @@ import socket
 import threading
 import time
 import sys
-from PyQt6.QtWidgets import QApplication, QStackedWidget, QFileDialog, QMessageBox
+from PyQt6.QtWidgets import QApplication, QStackedWidget, QFileDialog
 from pages import login, sign_up, home_page
 from dotenv import load_dotenv
 
@@ -19,14 +19,28 @@ PATH = ""
 CLIENT_DATA_PATH = "Client_data"
 
 
-print("CLIENT SIDE:")
-client_s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-try:
-    client_s.connect(ADDR)
-except Exception as e:
-    print(f"ERROR! Can't connect to server: {e}")
+def connect_to_server(max_retries=5):
+    print("CLIENT SIDE:")
+    client_s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    attempt = 0
+
+    while attempt < max_retries:
+        try:
+            client_s.connect(ADDR)
+            print("Connected to server successfully.")
+            return client_s
+        except Exception as e:
+            print(f"ERROR! Can't connect to server: {e}")
+            attempt += 1
+
+            time.sleep(0.5)
+
+    print("Max retries reached. Exiting.")
     client_s.close()
     sys.exit()
+
+
+client_s = connect_to_server()
 
 
 def handle_login():
@@ -96,19 +110,28 @@ def click_handler():
         PATH = selected_file_path
         home_page2.fileName.setText(file_name)
         print("fileName:", file_name)
+
     else:
         print("User canceled selecting file")
 
 
 def upload_file(file_path, file_name):
-    if (not file_name.strip() or file_name == "") and file_path == "":
+    if not file_name.strip() and file_path == "":  # chua chon file, ten file rong
         home_page2.show_error_choose_file()
         home_page2.fileName.setText("")
         return
-    elif (not file_name.strip() or file_name == "") and file_path != "":
+    elif file_path == "":  # chua chon file, user nhap ten bua
+        home_page2.file_name_not_exist(file_name)
+        home_page2.fileName.setText("")
+        return
+    elif not file_name.strip() and file_path != "":  # chon file nhung ten rong
         home_page2.show_error_file_name_upload()
         home_page2.fileName.setText("")
         return
+    elif "." not in file_name:  # file ko co duoi
+        extension = PATH.split(".")[-1]
+        file_name += "."
+        file_name += extension
 
     send_file = f"Upload/{file_name}"
     client_s.send(send_file.encode(FORMAT))
@@ -119,6 +142,7 @@ def upload_file(file_path, file_name):
     print(send_upload_full_segments)
 
     merge_result = client_s.recv(SIZE).decode(FORMAT)
+    client_s.sendall(merge_result.encode(FORMAT))
     unique_name = client_s.recv(SIZE).decode(FORMAT)
     if merge_result == "SUCCESS":
         home_page2.append_file(unique_name)
@@ -170,7 +194,7 @@ def send_segment(segment_index, segment):
 
 def download_file(file_name):
     check_file_name = home_page2.fileName.text()
-    if check_file_name == "" or not check_file_name.strip():
+    if not check_file_name.strip():
         home_page2.show_error_file_name_download()
         return
 

@@ -38,22 +38,19 @@ class HomePage_w(QMainWindow):
         self.model_upload = QStringListModel()
         self.upload_list.setModel(self.model_upload)
         self.load_initial_server_data_files()
-
         self.upload_list.setVerticalScrollBarPolicy(
             Qt.ScrollBarPolicy.ScrollBarAlwaysOn
         )
-
-        self.load_initial_server_data_files()
 
         # Initialize the QListView and QStringListModel for client files
         self.download_list = self.findChild(QListView, "download_list")
         self.model_download = QStringListModel()
         self.download_list.setModel(self.model_download)
         self.load_initial_client_data_files()
+
         self.download_list.setVerticalScrollBarPolicy(
             Qt.ScrollBarPolicy.ScrollBarAlwaysOn
         )
-        self.load_initial_client_data_files()
 
         # Connect the click event of the upload list to the handler
         self.upload_list.clicked.connect(self.handle_upload_list_click)

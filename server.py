@@ -68,13 +68,15 @@ def handle_client(conn, addr):
                 break
             key, name, pw = client_data.split("/")
             if key == "Login":
-                login_result = handle_login(name, pw)
+                with server_lock:
+                    login_result = handle_login(name, pw)
                 conn.sendall(login_result.encode(FORMAT))
                 if login_result == "Login success":
                     handle_client_requests(conn, addr)
                     break
             elif key == "SignUp":
-                sign_up_result = handle_sign_up(name, pw)
+                with server_lock:
+                    sign_up_result = handle_sign_up(name, pw)
                 conn.sendall(sign_up_result.encode(FORMAT))
     except Exception as e:
         print(f"[ERROR] Client handling failed: {e}")
@@ -136,9 +138,9 @@ def handle_upload(file_name, conn):
             signal = recv_segment(conn, segments, num_of_segments)
 
     print("[RECEIVE ALL SEGMENTS]")
-    merge_result = merge_segments_into_file(segments, file_name)
+    merge_result = merge_segments_into_file(segments, unique_name)
     conn.sendall(merge_result.encode(FORMAT))
-    time.sleep(0.1)
+    conn.recv(SIZE)
     conn.sendall(unique_name.encode(FORMAT))
 
 
@@ -161,9 +163,10 @@ def recv_segment(conn, segments, num_of_segments):
 def merge_segments_into_file(segments, file_name):
     try:
         file_path = os.path.join(SERVER_DATA_PATH, file_name)
-        with open(file_path, "wb") as f:
-            for segment in segments:
-                f.write(segment)
+        with server_lock:
+            with open(file_path, "wb") as f:
+                for segment in segments:
+                    f.write(segment)
         print("[MERGE SUCCESS] merge segments into file successfully")
         return "SUCCESS"
     except:
@@ -184,14 +187,14 @@ def handle_download(file_name, conn):
         conn.sendall(unique_name.encode(FORMAT))
 
     else:
-        error_msg = f"ERROR: File {file_name} not found"
-        print(error_msg)
+        print(f"ERROR: File {file_name} not found")
         conn.sendall("CAN'T FOUND".encode(FORMAT))
 
 
 def divide_file_into_segments(file_path, conn):
-    with open(file_path, "rb") as f:
-        file_data = f.read()
+    with server_lock:
+        with open(file_path, "rb") as f:
+            file_data = f.read()
     file_size = len(file_data)
     segments = [file_data[i : i + SIZE] for i in range(0, file_size, SIZE)]
     conn.sendall(f"{len(segments)}".encode(FORMAT))
