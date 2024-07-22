@@ -116,28 +116,28 @@ def click_handler():
 
 
 def upload_file(file_path, file_name):
-    home_page2.uploadButton.setDisabled(False)
-    home_page2.chooseFileButton.setDisabled(False)
+    home_page2.uploadButton.setDisabled(True)
+    home_page2.chooseFileButton.setDisabled(True)
 
     if not file_name.strip() and file_path == "":  # chua chon file, ten file rong
         home_page2.show_error_choose_file()
         home_page2.fileName.setText("")
-        home_page2.uploadButton.setDisabled(True)
-        home_page2.chooseFileButton.setDisabled(True)
+        home_page2.uploadButton.setDisabled(False)
+        home_page2.chooseFileButton.setDisabled(False)
         return
 
     elif file_path == "":  # chua chon file, user nhap ten bua
         home_page2.file_name_not_exist(file_name)
         home_page2.fileName.setText("")
-        home_page2.uploadButton.setDisabled(True)
-        home_page2.chooseFileButton.setDisabled(True)
+        home_page2.uploadButton.setDisabled(False)
+        home_page2.chooseFileButton.setDisabled(False)
         return
 
     elif not file_name.strip() and file_path != "":  # chon file nhung ten rong
         home_page2.show_error_file_name_upload()
         home_page2.fileName.setText("")
-        home_page2.uploadButton.setDisabled(True)
-        home_page2.chooseFileButton.setDisabled(True)
+        home_page2.uploadButton.setDisabled(False)
+        home_page2.chooseFileButton.setDisabled(False)
         return
 
     elif "." not in file_name:  # file ko co duoi
@@ -160,14 +160,14 @@ def upload_file(file_path, file_name):
         home_page2.append_file(unique_name)
         home_page2.fileName.setText("")
         home_page2.show_upload_success_w(unique_name)
-        home_page2.uploadButton.setDisabled(True)
-        home_page2.chooseFileButton.setDisabled(True)
+        home_page2.uploadButton.setDisabled(False)
+        home_page2.chooseFileButton.setDisabled(False)
 
     else:
         home_page2.show_upload_fail_w(file_name)
         home_page2.fileName.setText("")
-        home_page2.uploadButton.setDisabled(True)
-        home_page2.chooseFileButton.setDisabled(True)
+        home_page2.uploadButton.setDisabled(False)
+        home_page2.chooseFileButton.setDisabled(False)
 
 
 def divide_file_into_segments(file_path):
@@ -210,14 +210,14 @@ def send_segment(segment_index, segment):
 
 
 def download_file(file_name):
-    home_page2.downloadButton.setDisabled(False)
-    home_page2.chooseFileButton.setDisabled(False)
+    home_page2.downloadButton.setDisabled(True)
+    home_page2.chooseFileButton.setDisabled(True)
 
     check_file_name = home_page2.fileName.text()
     if not check_file_name.strip():
         home_page2.show_error_file_name_download()
-        home_page2.downloadButton.setDisabled(True)
-        home_page2.chooseFileButton.setDisabled(True)
+        home_page2.downloadButton.setDisabled(False)
+        home_page2.chooseFileButton.setDisabled(False)
         return
 
     send_file = f"Download/{file_name}"
@@ -225,8 +225,8 @@ def download_file(file_name):
     server_msg = client_s.recv(SIZE).decode(FORMAT)
     if server_msg == "CAN'T FOUND":
         home_page2.file_name_not_exist(file_name)
-        home_page2.downloadButton.setDisabled(True)
-        home_page2.chooseFileButton.setDisabled(True)
+        home_page2.downloadButton.setDisabled(False)
+        home_page2.chooseFileButton.setDisabled(False)
         return
 
     num_of_segments = int(server_msg)
@@ -244,13 +244,13 @@ def download_file(file_name):
         home_page2.show_download_success(unique_name)
         home_page2.append_downloaded_file(unique_name)
         home_page2.fileName.setText("")
-        home_page2.downloadButton.setDisabled(True)
-        home_page2.chooseFileButton.setDisabled(True)
+        home_page2.downloadButton.setDisabled(False)
+        home_page2.chooseFileButton.setDisabled(False)
     else:
         home_page2.show_download_fail(file_name)
         home_page2.fileName.setText("")
-        home_page2.downloadButton.setDisabled(True)
-        home_page2.chooseFileButton.setDisabled(True)
+        home_page2.downloadButton.setDisabled(False)
+        home_page2.chooseFileButton.setDisabled(False)
 
 
 def recv_segment(num_of_segments, segments):
