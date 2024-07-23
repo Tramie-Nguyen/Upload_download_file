@@ -1,6 +1,6 @@
 import os
 from PyQt6 import uic
-from PyQt6.QtWidgets import QMainWindow, QListView, QMessageBox
+from PyQt6.QtWidgets import QMainWindow, QListView, QMessageBox, QFileDialog
 from PyQt6.QtCore import QStringListModel, Qt
 from PyQt6.QtGui import QFont
 
@@ -12,7 +12,6 @@ CLIENT_DATA_PATH = "Client_data"
 
 
 class HomePage_w(QMainWindow):
-
     def __init__(self):
         super(HomePage_w, self).__init__()
         uic.loadUi("templates/home_page.ui", self)
@@ -46,22 +45,37 @@ class HomePage_w(QMainWindow):
         self.download_list = self.findChild(QListView, "download_list")
         self.model_download = QStringListModel()
         self.download_list.setModel(self.model_download)
-        self.load_initial_client_data_files()
-
         self.download_list.setVerticalScrollBarPolicy(
             Qt.ScrollBarPolicy.ScrollBarAlwaysOn
         )
 
         # Connect the click event of the upload list to the handler
         self.upload_list.clicked.connect(self.handle_upload_list_click)
+        self.clicked_file = False
+        self.choose_file = False
+        self.selected_file_name = ""
+        self.selected_file_path = ""
+
+    def click_handler(self):
+        dialog = QFileDialog()
+        dialog.setNameFilter("All files (*)")
+        dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
+        dialog_success = dialog.exec()
+
+        if dialog_success == 1:
+            self.selected_file_path = dialog.selectedFiles()[0]
+            file_name = os.path.basename(self.selected_file_path)
+            self.fileName.setText(file_name)
+            print("fileName:", file_name)
+            self.choose_file = True
+
+        else:
+            print("User canceled selecting file")
+            self.choose_file = False
 
     def load_initial_server_data_files(self):
         server_file_names = self.get_file_names(SERVER_DATA_PATH)
         self.model_upload.setStringList(server_file_names)
-
-    def load_initial_client_data_files(self):
-        client_file_names = self.get_file_names(CLIENT_DATA_PATH)
-        self.model_download.setStringList(client_file_names)
 
     def get_file_names(self, folder_path):
         file_names = []
@@ -74,11 +88,8 @@ class HomePage_w(QMainWindow):
         file_name = self.model_upload.data(index, Qt.ItemDataRole.DisplayRole)
         self.fileName.setText(file_name)
         print(f"Selected file from upload list: {file_name}")
-
-    def handle_download_list_click(self, index):
-        file_name = self.model_download.data(index, Qt.ItemDataRole.DisplayRole)
-        self.fileName.setText(file_name)
-        print(f"Selected file from download list: {file_name}")
+        self.selected_file_name = file_name
+        self.clicked_file = True
 
     def append_file(self, file_name):
         current_files = self.model_upload.stringList()
@@ -104,7 +115,7 @@ class HomePage_w(QMainWindow):
         download_fail.setWindowTitle("Download Error")
         download_fail.exec()
 
-    def show_error_file_name_download(self):
+    def show_error_choose_file_to_download(self):
         error_dialog = QMessageBox()
         error_dialog.setIcon(QMessageBox.Icon.Warning)
         error_dialog.setText("User forget to choose file to download")
@@ -125,7 +136,7 @@ class HomePage_w(QMainWindow):
         error_choose_f.setWindowTitle("Choose file error")
         error_choose_f.exec()
 
-    def show_error_file_name_upload(self):
+    def show_error_file_name(self):
         error_f_name = QMessageBox()
         error_f_name.setIcon(QMessageBox.Icon.Warning)
         error_f_name.setText(f"Invalid file's name")
@@ -144,4 +155,11 @@ class HomePage_w(QMainWindow):
         error_dialog.setIcon(QMessageBox.Icon.Critical)
         error_dialog.setText(f"Upload file {file_name} fail !!!")
         error_dialog.setWindowTitle("Upload Error")
+        error_dialog.exec()
+
+    def procedure_error(self):
+        error_dialog = QMessageBox()
+        error_dialog.setIcon(QMessageBox.Icon.Critical)
+        error_dialog.setText("Invalid request ")
+        error_dialog.setWindowTitle("Procedure error")
         error_dialog.exec()

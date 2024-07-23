@@ -15,8 +15,6 @@ PORT = 45999
 ADDR = (IP, PORT)
 FORMAT = "utf-8"
 SIZE = 1024
-PATH = ""
-CLIENT_DATA_PATH = "Client_data"
 
 
 def connect_to_server(max_retries=5):
@@ -97,53 +95,53 @@ def handle_sign_up():
         signup_page.sign_up_success.emit()
 
 
-def click_handler():
-    dialog = QFileDialog()
-    dialog.setNameFilter("All files (*)")
-    dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
-    dialog_success = dialog.exec()
+def download_click_handler():
+    origin_file_name = home_page2.selected_file_name
+    client_file_path, _ = QFileDialog.getSaveFileName(
+        None, "Save File", origin_file_name, "All Files (*)"
+    )
+    if client_file_path:
+        client_data_path = os.path.dirname(client_file_path)
+        base_name = os.path.basename(client_file_path)
 
-    if dialog_success == 1:
-        selected_file_path = dialog.selectedFiles()[0]
-        file_name = os.path.basename(selected_file_path)
-        global PATH
-        PATH = selected_file_path
-        home_page2.fileName.setText(file_name)
-        print("fileName:", file_name)
-
+        print(f"User choose to store in :{client_data_path}")
+        print(f"file name after rename: {base_name}")
+        download_file(base_name, client_data_path)
     else:
-        print("User canceled selecting file")
+        print("user canceled choose place to store download file")
 
 
 def upload_file(file_path, file_name):
-    home_page2.uploadButton.setDisabled(True)
-    home_page2.chooseFileButton.setDisabled(True)
+    # chon file trong list upload -> co path
+    if home_page2.clicked_file == True and home_page2.choose_file == False:
+        home_page2.select_file = False
+        home_page2.procedure_error()
+        home_page2.fileName.setText("")
+        return
 
-    if not file_name.strip() and file_path == "":  # chua chon file, ten file rong
+    elif not file_name.strip() and file_path == "":  # chua chon file, ten file rong
         home_page2.show_error_choose_file()
         home_page2.fileName.setText("")
-        home_page2.uploadButton.setDisabled(False)
-        home_page2.chooseFileButton.setDisabled(False)
         return
 
     elif file_path == "":  # chua chon file, user nhap ten bua
         home_page2.file_name_not_exist(file_name)
         home_page2.fileName.setText("")
-        home_page2.uploadButton.setDisabled(False)
-        home_page2.chooseFileButton.setDisabled(False)
         return
 
     elif not file_name.strip() and file_path != "":  # chon file nhung ten rong
-        home_page2.show_error_file_name_upload()
+        home_page2.show_error_file_name()
         home_page2.fileName.setText("")
-        home_page2.uploadButton.setDisabled(False)
-        home_page2.chooseFileButton.setDisabled(False)
         return
 
     elif "." not in file_name:  # file ko co duoi
-        extension = PATH.split(".")[-1]
+        extension = file_path.split(".")[-1]
         file_name += "."
         file_name += extension
+
+    home_page2.uploadButton.setDisabled(True)
+    home_page2.downloadButton.setDisabled(True)
+    home_page2.chooseFileButton.setDisabled(True)
 
     send_file = f"Upload/{file_name}"
     client_s.send(send_file.encode(FORMAT))
@@ -158,16 +156,16 @@ def upload_file(file_path, file_name):
     unique_name = client_s.recv(SIZE).decode(FORMAT)
     if merge_result == "SUCCESS":
         home_page2.append_file(unique_name)
-        home_page2.fileName.setText("")
         home_page2.show_upload_success_w(unique_name)
-        home_page2.uploadButton.setDisabled(False)
-        home_page2.chooseFileButton.setDisabled(False)
 
     else:
         home_page2.show_upload_fail_w(file_name)
-        home_page2.fileName.setText("")
-        home_page2.uploadButton.setDisabled(False)
-        home_page2.chooseFileButton.setDisabled(False)
+    home_page2.selected_file_path = ""
+    home_page2.fileName.setText("")
+    home_page2.clicked_file = False
+    home_page2.uploadButton.setDisabled(False)
+    home_page2.downloadButton.setDisabled(False)
+    home_page2.chooseFileButton.setDisabled(False)
 
 
 def divide_file_into_segments(file_path):
@@ -209,22 +207,25 @@ def send_segment(segment_index, segment):
             print(f"Error sending segment {segment_index}: Retrying...")
 
 
-def download_file(file_name):
-    home_page2.downloadButton.setDisabled(True)
-    home_page2.chooseFileButton.setDisabled(True)
-
-    check_file_name = home_page2.fileName.text()
-    if not check_file_name.strip():
-        home_page2.show_error_file_name_download()
-        home_page2.downloadButton.setDisabled(False)
-        home_page2.chooseFileButton.setDisabled(False)
+def download_file(file_name, client_path):
+    if home_page2.clicked_file == False:  # chua chon file
+        home_page2.show_error_choose_file_to_download()
+        return
+    elif not home_page2.fileName.text().strip():  # chon r nhung dat ten ko hop le
+        home_page2.show_error_file_name()
         return
 
-    send_file = f"Download/{file_name}"
+    home_page2.downloadButton.setDisabled(True)
+    home_page2.uploadButton.setDisabled(True)
+    home_page2.chooseFileButton.setDisabled(True)
+
+    send_file = f"Download/{home_page2.selected_file_name}"  # ten file trong server_data ma user chon
     client_s.sendall(send_file.encode(FORMAT))
+    client_s.recv(SIZE)
+    client_s.sendall(f"{file_name}@{client_path}".encode(FORMAT))  # file rename
     server_msg = client_s.recv(SIZE).decode(FORMAT)
     if server_msg == "CAN'T FOUND":
-        home_page2.file_name_not_exist(file_name)
+        home_page2.file_name_not_exist(home_page2.selected_file_name)
         home_page2.downloadButton.setDisabled(False)
         home_page2.chooseFileButton.setDisabled(False)
         return
@@ -239,18 +240,18 @@ def download_file(file_name):
 
     print("[RECEIVE ALL SEGMENTS]")
     unique_name = client_s.recv(SIZE).decode(FORMAT)
-    merge_result = merge_segments_into_file(segments, unique_name)
+    print(unique_name)
+    merge_result = merge_segments_into_file(segments, unique_name, client_path)
     if merge_result == "SUCCESS":
         home_page2.show_download_success(unique_name)
         home_page2.append_downloaded_file(unique_name)
         home_page2.fileName.setText("")
-        home_page2.downloadButton.setDisabled(False)
-        home_page2.chooseFileButton.setDisabled(False)
     else:
         home_page2.show_download_fail(file_name)
         home_page2.fileName.setText("")
-        home_page2.downloadButton.setDisabled(False)
-        home_page2.chooseFileButton.setDisabled(False)
+    home_page2.downloadButton.setDisabled(False)
+    home_page2.chooseFileButton.setDisabled(False)
+    home_page2.uploadButton.setDisabled(False)
 
 
 def recv_segment(num_of_segments, segments):
@@ -270,9 +271,9 @@ def recv_segment(num_of_segments, segments):
     return 1
 
 
-def merge_segments_into_file(segments, file_name):
+def merge_segments_into_file(segments, file_name, client_path):
     try:
-        file_path = os.path.join(CLIENT_DATA_PATH, file_name)
+        file_path = os.path.join(client_path, file_name)
         with open(file_path, "wb") as f:
             for segment in segments:
                 f.write(segment)
@@ -302,13 +303,11 @@ if __name__ == "__main__":
     signup_page.signUpButton.clicked.connect(handle_sign_up)
     signup_page.loginButton.clicked.connect(lambda: stack_widget.setCurrentIndex(0))
     signup_page.sign_up_success.connect(lambda: stack_widget.setCurrentIndex(0))
-    home_page2.chooseFileButton.clicked.connect(click_handler)
+    home_page2.chooseFileButton.clicked.connect(home_page2.click_handler)
     home_page2.uploadButton.clicked.connect(
-        lambda: upload_file(PATH, home_page2.fileName.text())
+        lambda: upload_file(home_page2.selected_file_path, home_page2.fileName.text())
     )
-    home_page2.downloadButton.clicked.connect(
-        lambda: download_file(home_page2.fileName.text())
-    )
+    home_page2.downloadButton.clicked.connect(download_click_handler)
 
     stack_widget.setCurrentIndex(0)
     stack_widget.setFixedHeight(600)

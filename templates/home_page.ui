@@ -113,7 +113,7 @@ background-color: rgb(85, 85, 255);</string>
      </font>
     </property>
     <property name="cursor">
-     <cursorShape>WaitCursor</cursorShape>
+     <cursorShape>IBeamCursor</cursorShape>
     </property>
     <property name="mouseTracking">
      <bool>true</bool>

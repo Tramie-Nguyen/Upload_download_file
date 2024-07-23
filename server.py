@@ -15,7 +15,6 @@ ADDR = (IP, PORT)
 FORMAT = "utf-8"
 SIZE = 1024
 SERVER_DATA_PATH = "Server_data"
-CLIENT_DATA_PATH = "Client_data"
 
 
 db_message, user_col = connect_database()
@@ -37,9 +36,6 @@ def get_unique_name(file_name, folder_path):
 def check_file_exist_or_not():
     if not os.path.exists(SERVER_DATA_PATH):
         os.makedirs(SERVER_DATA_PATH)
-
-    if not os.path.exists(CLIENT_DATA_PATH):
-        os.makedirs(CLIENT_DATA_PATH)
 
 
 def main():
@@ -175,9 +171,18 @@ def merge_segments_into_file(segments, file_name):
 
 
 def handle_download(file_name, conn):
-    unique_name = get_unique_name(file_name, CLIENT_DATA_PATH)
+    conn.sendall(file_name.encode(FORMAT))  # send origin_file
+    client_data = conn.recv(SIZE).decode(FORMAT)  # rename_file + client_path
+    new_name, client_path = client_data.split("@")
+    if "." not in new_name:  # rename_file ko co duoi
+        file_parts = file_name.split(".")
+        file_extension = file_parts[-1]
+        new_name += "."
+        new_name += file_extension
+
     file_path = os.path.join(SERVER_DATA_PATH, file_name)
     if os.path.exists(file_path):
+        unique_name = get_unique_name(new_name, client_path)
         segments = divide_file_into_segments(file_path, conn)
         create_segment_thread(segments, conn)
 
