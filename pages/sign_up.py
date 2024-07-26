@@ -17,7 +17,7 @@ class SignUp_w(QMainWindow):
 
         font2 = QFont()
         font2.setBold(True)
-        font2.setPointSize(13)
+        font2.setPointSize(15)
         self.label_2.setFont(font2)
         self.label_3.setFont(font2)
 
