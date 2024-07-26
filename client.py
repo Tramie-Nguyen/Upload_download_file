@@ -4,7 +4,7 @@ import threading
 import time
 import sys
 from PyQt6.QtWidgets import QApplication, QStackedWidget, QFileDialog
-from pages import login, sign_up, home_page
+from pages import login, sign_up, home_page, loading_page
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -113,8 +113,7 @@ def download_click_handler():
 
 def upload_file(file_path, file_name):
     # chon file trong list upload -> co path
-    if home_page2.clicked_file == True and home_page2.choose_file == False:
-        home_page2.select_file = False
+    if home_page2.clicked_file == True:
         home_page2.procedure_error()
         home_page2.fileName.setText("")
         return
@@ -162,7 +161,7 @@ def upload_file(file_path, file_name):
         home_page2.show_upload_fail_w(file_name)
     home_page2.selected_file_path = ""
     home_page2.fileName.setText("")
-    home_page2.clicked_file = False
+    home_page2.choose_file = False
     home_page2.uploadButton.setDisabled(False)
     home_page2.downloadButton.setDisabled(False)
     home_page2.chooseFileButton.setDisabled(False)
@@ -265,6 +264,7 @@ def recv_segment(num_of_segments, segments):
                 segments[segment_index] = segment
                 client_s.sendall(f"ack {segment_index}".encode(FORMAT))
                 break
+
             except:
                 client_s.sendall(f"nak {segment_index}".encode(FORMAT))
                 print(f"Error receiving segment {segment_index}: Retrying...")
@@ -303,7 +303,6 @@ if __name__ == "__main__":
     signup_page.signUpButton.clicked.connect(handle_sign_up)
     signup_page.loginButton.clicked.connect(lambda: stack_widget.setCurrentIndex(0))
     signup_page.sign_up_success.connect(lambda: stack_widget.setCurrentIndex(0))
-    home_page2.chooseFileButton.clicked.connect(home_page2.click_handler)
     home_page2.uploadButton.clicked.connect(
         lambda: upload_file(home_page2.selected_file_path, home_page2.fileName.text())
     )

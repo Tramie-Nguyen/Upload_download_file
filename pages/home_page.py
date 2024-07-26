@@ -49,6 +49,9 @@ class HomePage_w(QMainWindow):
             Qt.ScrollBarPolicy.ScrollBarAlwaysOn
         )
 
+        # Connect buttons
+        self.chooseFileButton.clicked.connect(self.click_handler)
+
         # Connect the click event of the upload list to the handler
         self.upload_list.clicked.connect(self.handle_upload_list_click)
         self.clicked_file = False
@@ -68,6 +71,7 @@ class HomePage_w(QMainWindow):
             self.fileName.setText(file_name)
             print("fileName:", file_name)
             self.choose_file = True
+            self.clicked_file = False
 
         else:
             print("User canceled selecting file")
@@ -90,6 +94,7 @@ class HomePage_w(QMainWindow):
         print(f"Selected file from upload list: {file_name}")
         self.selected_file_name = file_name
         self.clicked_file = True
+        self.choose_file = False
 
     def append_file(self, file_name):
         current_files = self.model_upload.stringList()
