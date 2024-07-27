@@ -124,11 +124,10 @@ def handle_client_requests(conn, addr):
 
 def handle_upload(file_name, conn):
     unique_name = get_unique_name(file_name, SERVER_DATA_PATH)
+    conn.sendall(unique_name.encode(FORMAT))
     num_of_segments = int(conn.recv(SIZE).decode(FORMAT))
     segments = [None] * num_of_segments
-
     signal = 0
-
     while signal == 0:
         with server_lock:
             signal = recv_segment(conn, segments, num_of_segments)
@@ -136,8 +135,6 @@ def handle_upload(file_name, conn):
     print("[RECEIVE ALL SEGMENTS]")
     merge_result = merge_segments_into_file(segments, unique_name)
     conn.sendall(merge_result.encode(FORMAT))
-    conn.recv(SIZE)
-    conn.sendall(unique_name.encode(FORMAT))
 
 
 def recv_segment(conn, segments, num_of_segments):
@@ -183,13 +180,13 @@ def handle_download(file_name, conn):
     file_path = os.path.join(SERVER_DATA_PATH, file_name)
     if os.path.exists(file_path):
         unique_name = get_unique_name(new_name, client_path)
+        conn.sendall(unique_name.encode(FORMAT))
+        conn.recv(SIZE)
         segments = divide_file_into_segments(file_path, conn)
         create_segment_thread(segments, conn)
 
         send_msg = "Download all segments successfully"
         print(send_msg)
-
-        conn.sendall(unique_name.encode(FORMAT))
 
     else:
         print(f"ERROR: File {file_name} not found")

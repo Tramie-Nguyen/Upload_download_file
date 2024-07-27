@@ -106,13 +106,6 @@ class HomePage_w(QMainWindow):
         current_downloaded_files.append(file_name)
         self.model_download.setStringList(current_downloaded_files)
 
-    def show_download_success(self, file_name):
-        download_success = QMessageBox()
-        download_success.setIcon(QMessageBox.Icon.Information)
-        download_success.setText(f"Download file: {file_name} successfully")
-        download_success.setWindowTitle("Download Success")
-        download_success.exec()
-
     def show_download_fail(self, file_name):
         download_fail = QMessageBox()
         download_fail.setIcon(QMessageBox.Icon.Critical)
@@ -147,13 +140,6 @@ class HomePage_w(QMainWindow):
         error_f_name.setText(f"Invalid file's name")
         error_f_name.setWindowTitle("Invalid file's name")
         error_f_name.exec()
-
-    def show_upload_success_w(self, file_name):
-        upload_success = QMessageBox()
-        upload_success.setIcon(QMessageBox.Icon.Information)
-        upload_success.setText(f"Upload file {file_name} successfully !!!")
-        upload_success.setWindowTitle("Upload success")
-        upload_success.exec()
 
     def show_upload_fail_w(self, file_name):
         error_dialog = QMessageBox()

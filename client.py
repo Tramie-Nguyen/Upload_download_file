@@ -138,33 +138,40 @@ def upload_file(file_path, file_name):
         file_name += "."
         file_name += extension
 
-    home_page2.uploadButton.setDisabled(True)
-    home_page2.downloadButton.setDisabled(True)
-    home_page2.chooseFileButton.setDisabled(True)
-
     send_file = f"Upload/{file_name}"
-    client_s.send(send_file.encode(FORMAT))
+    client_s.sendall(send_file.encode(FORMAT))
+    unique_name = client_s.recv(SIZE).decode(FORMAT)
     segments = divide_file_into_segments(file_path)
+
+    # show loading_page
+    stack_widget.setCurrentIndex(3)
+    loading_page2.show_loading_picture()
+    loading_page2.progressBar.setValue(0)
+    loading_page2.progressBar.setMaximum(len(segments))
+    loading_page2.fileName2.setText(unique_name)
+    loading_page2.work.setText("Uploading file...")
+
     create_segment_thread(segments)
 
     send_upload_full_segments = "Upload all segments successfully"
     print(send_upload_full_segments)
 
     merge_result = client_s.recv(SIZE).decode(FORMAT)
-    client_s.sendall(merge_result.encode(FORMAT))
-    unique_name = client_s.recv(SIZE).decode(FORMAT)
+
     if merge_result == "SUCCESS":
         home_page2.append_file(unique_name)
-        home_page2.show_upload_success_w(unique_name)
+        loading_page2.show_success_picture()  # Show end picture
+        time.sleep(3)
+        stack_widget.setCurrentIndex(2)
 
     else:
+        stack_widget.setCurrentIndex(2)
         home_page2.show_upload_fail_w(file_name)
+
     home_page2.selected_file_path = ""
     home_page2.fileName.setText("")
     home_page2.choose_file = False
-    home_page2.uploadButton.setDisabled(False)
-    home_page2.downloadButton.setDisabled(False)
-    home_page2.chooseFileButton.setDisabled(False)
+    stack_widget.setCurrentIndex(2)
 
 
 def divide_file_into_segments(file_path):
@@ -182,6 +189,7 @@ def create_segment_thread(segments):
         t = threading.Thread(target=send_segment, args=(index, segment))
         threads.append(t)
         t.start()
+
     for t in threads:
         t.join()
 
@@ -197,6 +205,8 @@ def send_segment(segment_index, segment):
                 key, index = recv_msg.split(" ")
                 if key == "ack" and int(index) == segment_index:
                     print(f"ack {segment_index}")
+                    # Update progress bar
+                    loading_page2.progressBar.setValue(segment_index + 1)
                     break
                 else:
                     print(f"nak {segment_index}")
@@ -214,43 +224,53 @@ def download_file(file_name, client_path):
         home_page2.show_error_file_name()
         return
 
-    home_page2.downloadButton.setDisabled(True)
-    home_page2.uploadButton.setDisabled(True)
-    home_page2.chooseFileButton.setDisabled(True)
-
     send_file = f"Download/{home_page2.selected_file_name}"  # ten file trong server_data ma user chon
     client_s.sendall(send_file.encode(FORMAT))
     client_s.recv(SIZE)
     client_s.sendall(f"{file_name}@{client_path}".encode(FORMAT))  # file rename
     server_msg = client_s.recv(SIZE).decode(FORMAT)
+
     if server_msg == "CAN'T FOUND":
         home_page2.file_name_not_exist(home_page2.selected_file_name)
-        home_page2.downloadButton.setDisabled(False)
-        home_page2.chooseFileButton.setDisabled(False)
         return
 
-    num_of_segments = int(server_msg)
-    segments = [None] * num_of_segments
-    signal = 0
+    unique_name = server_msg
+    print(unique_name)
+    client_s.sendall(unique_name.encode(FORMAT))
 
+    num_of_segments = int(client_s.recv(SIZE).decode(FORMAT))
+    segments = [None] * num_of_segments
+
+    # show loading_page
+    stack_widget.setCurrentIndex(3)
+    loading_page2.show_loading_picture()
+    loading_page2.progressBar.setValue(0)
+    loading_page2.progressBar.setMaximum(len(segments))
+    loading_page2.fileName2.setText(unique_name)
+    loading_page2.work.setText("Downloading file...")
+
+    signal = 0
     while signal == 0:
         with client_lock:
             signal = recv_segment(num_of_segments, segments)
 
     print("[RECEIVE ALL SEGMENTS]")
-    unique_name = client_s.recv(SIZE).decode(FORMAT)
-    print(unique_name)
     merge_result = merge_segments_into_file(segments, unique_name, client_path)
+
     if merge_result == "SUCCESS":
-        home_page2.show_download_success(unique_name)
+        loading_page2.show_success_picture()
         home_page2.append_downloaded_file(unique_name)
         home_page2.fileName.setText("")
+        time.sleep(3)
+        stack_widget.setCurrentIndex(2)
+
     else:
+        stack_widget.setCurrentIndex(2)
         home_page2.show_download_fail(file_name)
         home_page2.fileName.setText("")
-    home_page2.downloadButton.setDisabled(False)
-    home_page2.chooseFileButton.setDisabled(False)
-    home_page2.uploadButton.setDisabled(False)
+
+    home_page2.clicked_file = False
+    home_page2.selected_file_name = ""
 
 
 def recv_segment(num_of_segments, segments):
@@ -260,9 +280,10 @@ def recv_segment(num_of_segments, segments):
                 segment_index = int(client_s.recv(SIZE).decode(FORMAT))
                 client_s.sendall("ok".encode(FORMAT))
                 segment = client_s.recv(SIZE)
-
                 segments[segment_index] = segment
                 client_s.sendall(f"ack {segment_index}".encode(FORMAT))
+                # Update progress bar
+                loading_page2.progressBar.setValue(segment_index + 1)
                 break
 
             except:
@@ -289,12 +310,14 @@ if __name__ == "__main__":
     login_page = login.Login_w()
     signup_page = sign_up.SignUp_w()
     home_page2 = home_page.HomePage_w()
+    loading_page2 = loading_page.Loading_w()
 
     # Allow multiple windows to be managed
     stack_widget = QStackedWidget()
     stack_widget.addWidget(login_page)
     stack_widget.addWidget(signup_page)
     stack_widget.addWidget(home_page2)
+    stack_widget.addWidget(loading_page2)
 
     # Handle switch page
     login_page.loginButton.clicked.connect(handle_login)
