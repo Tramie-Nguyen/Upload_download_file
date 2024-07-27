@@ -161,7 +161,7 @@ def upload_file(file_path, file_name):
     if merge_result == "SUCCESS":
         home_page2.append_file(unique_name)
         loading_page2.show_success_picture()  # Show end picture
-        time.sleep(3)
+        time.sleep(2)
         stack_widget.setCurrentIndex(2)
 
     else:
@@ -261,7 +261,7 @@ def download_file(file_name, client_path):
         loading_page2.show_success_picture()
         home_page2.append_downloaded_file(unique_name)
         home_page2.fileName.setText("")
-        time.sleep(3)
+        time.sleep(2)
         stack_widget.setCurrentIndex(2)
 
     else:

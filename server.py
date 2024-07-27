@@ -21,10 +21,30 @@ db_message, user_col = connect_database()
 print(db_message)
 
 
+def extract_number(file_name):
+    start = file_name.find("(")
+    end = file_name.find(")")
+
+    if start != -1 and end != -1 and start < end:
+        number_str = file_name[start + 1 : end]
+        if number_str.isdigit():
+            return int(number_str)
+
+    return None
+
+
 def get_unique_name(file_name, folder_path):
     base_name, extension = os.path.splitext(file_name)
     new_name = file_name
     count = 1
+
+    if "(" in base_name and ")" in base_name:
+        number = extract_number(base_name)
+        if number is not None:
+            base_name = base_name[: base_name.find("(")]
+            new_name = f"{base_name}{extension}"
+            if not os.path.exists(os.path.join(folder_path, new_name)):
+                return new_name
 
     while os.path.exists(os.path.join(folder_path, new_name)):
         new_name = f"{base_name}({count}){extension}"
