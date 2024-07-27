@@ -12,7 +12,7 @@ class SignUp_w(QMainWindow):
         uic.loadUi("templates/sign_up.ui", self)
         font = QFont()
         font.setBold(True)
-        font.setPointSize(22)
+        font.setPointSize(25)
         self.label.setFont(font)
 
         font2 = QFont()

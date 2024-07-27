@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>850</width>
-    <height>601</height>
+    <height>599</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -83,17 +83,23 @@
      <rect>
       <x>560</x>
       <y>180</y>
-      <width>251</width>
+      <width>241</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>14</pointsize>
      </font>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(248, 237, 255)</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
     <property name="placeholderText">
-     <string>ENTER  NAME</string>
+     <string>Enter name</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="userPassword">
@@ -101,27 +107,30 @@
      <rect>
       <x>560</x>
       <y>240</y>
-      <width>251</width>
+      <width>241</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>12</pointsize>
+      <pointsize>14</pointsize>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(248, 237, 255)</string>
     </property>
     <property name="echoMode">
      <enum>QLineEdit::Password</enum>
     </property>
     <property name="placeholderText">
-     <string>ENTER PASSWORD</string>
+     <string>Enter password</string>
     </property>
    </widget>
    <widget class="QPushButton" name="loginButton">
     <property name="geometry">
      <rect>
       <x>580</x>
-      <y>310</y>
+      <y>320</y>
       <width>101</width>
       <height>41</height>
      </rect>
@@ -143,7 +152,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>470</x>
-      <y>370</y>
+      <y>380</y>
       <width>331</width>
       <height>51</height>
      </rect>
@@ -153,71 +162,33 @@ color: rgb(255, 255, 255);</string>
       <pointsize>14</pointsize>
      </font>
     </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 170, 0);</string>
+    </property>
     <property name="text">
      <string>SIGN UP FOR NEW ACCOUNT</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_5">
+   <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>-140</x>
-      <y>-130</y>
-      <width>1181</width>
-      <height>751</height>
+      <x>0</x>
+      <y>0</y>
+      <width>851</width>
+      <height>551</height>
      </rect>
     </property>
     <property name="text">
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>../../../../Downloads/04b9764b5c98d389dc22d61834dfef0c.jpg</pixmap>
+     <pixmap>../../../../Downloads/login.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QStackedWidget" name="stackedWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>431</width>
-      <height>541</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::Panel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Sunken</enum>
-    </property>
-    <property name="lineWidth">
-     <number>3</number>
-    </property>
-    <widget class="QWidget" name="page">
-     <widget class="QLabel" name="label_4">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>421</width>
-        <height>531</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="pixmap">
-       <pixmap>../../../../Downloads/ea98ea1b937aeabc6d75f590b6c6a5b3.jpg</pixmap>
-      </property>
-      <property name="scaledContents">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="page_2"/>
-   </widget>
-   <zorder>label_5</zorder>
+   <zorder>label_4</zorder>
    <zorder>label</zorder>
    <zorder>label_2</zorder>
    <zorder>label_3</zorder>
@@ -225,7 +196,6 @@ color: rgb(255, 255, 255);</string>
    <zorder>userPassword</zorder>
    <zorder>loginButton</zorder>
    <zorder>signUpButton</zorder>
-   <zorder>stackedWidget</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

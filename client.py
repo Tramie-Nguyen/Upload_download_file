@@ -160,8 +160,7 @@ def upload_file(file_path, file_name):
 
     if merge_result == "SUCCESS":
         home_page2.append_file(unique_name)
-        loading_page2.show_success_picture()  # Show end picture
-        time.sleep(2)
+        time.sleep(1)
         stack_widget.setCurrentIndex(2)
 
     else:
@@ -171,7 +170,6 @@ def upload_file(file_path, file_name):
     home_page2.selected_file_path = ""
     home_page2.fileName.setText("")
     home_page2.choose_file = False
-    stack_widget.setCurrentIndex(2)
 
 
 def divide_file_into_segments(file_path):
@@ -258,10 +256,9 @@ def download_file(file_name, client_path):
     merge_result = merge_segments_into_file(segments, unique_name, client_path)
 
     if merge_result == "SUCCESS":
-        loading_page2.show_success_picture()
         home_page2.append_downloaded_file(unique_name)
         home_page2.fileName.setText("")
-        time.sleep(2)
+        time.sleep(1)
         stack_widget.setCurrentIndex(2)
 
     else:

@@ -74,6 +74,10 @@ background-color: rgb(85, 85, 255);</string>
       <bold>false</bold>
      </font>
     </property>
+    <property name="styleSheet">
+     <string notr="true">
+background-color: rgb(255, 216, 218)</string>
+    </property>
     <property name="text">
      <string>Download</string>
     </property>
@@ -93,6 +97,10 @@ background-color: rgb(85, 85, 255);</string>
       <weight>50</weight>
       <bold>false</bold>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">
+background-color: rgb(255, 216, 218)</string>
     </property>
     <property name="text">
      <string>Upload</string>
@@ -121,6 +129,9 @@ background-color: rgb(85, 85, 255);</string>
     <property name="tabletTracking">
      <bool>false</bool>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(188, 192, 255);</string>
+    </property>
     <property name="text">
      <string/>
     </property>
@@ -128,10 +139,10 @@ background-color: rgb(85, 85, 255);</string>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>-90</y>
-      <width>891</width>
-      <height>681</height>
+      <x>-150</x>
+      <y>-110</y>
+      <width>1441</width>
+      <height>1081</height>
      </rect>
     </property>
     <property name="font">
@@ -143,7 +154,7 @@ background-color: rgb(85, 85, 255);</string>
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>../../../../Downloads/04b9764b5c98d389dc22d61834dfef0c.jpg</pixmap>
+     <pixmap>../../../../Downloads/3a012cb3442a1e9e35cc2939b6171ac9.jpg</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -168,22 +179,6 @@ background-color: rgb(85, 85, 255);</string>
     </property>
     <property name="tabletTracking">
      <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>10</y>
-      <width>521</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap>../../../../Downloads/fa4daed5-4f71-419d-9a3a-d2a2429d5731.jpg</pixmap>
     </property>
    </widget>
    <widget class="QListView" name="download_list">
@@ -409,9 +404,25 @@ background-color: rgb(85, 85, 255);</string>
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
+   <widget class="QLineEdit" name="lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>10</y>
+      <width>501</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="frame">
+     <bool>false</bool>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
    <zorder>label_2</zorder>
+   <zorder>lineEdit</zorder>
    <zorder>download_list</zorder>
-   <zorder>label_4</zorder>
    <zorder>label</zorder>
    <zorder>chooseFileButton</zorder>
    <zorder>downloadButton</zorder>

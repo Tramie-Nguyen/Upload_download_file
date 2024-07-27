@@ -6,38 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>850</width>
-    <height>963</height>
+    <width>849</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="label_5">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>-10</y>
-      <width>931</width>
-      <height>601</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap>../../../../Downloads/04b9764b5c98d389dc22d61834dfef0c.jpg</pixmap>
-    </property>
-    <property name="scaledContents">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QPushButton" name="loginButton">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>410</y>
+      <x>450</x>
+      <y>390</y>
       <width>321</width>
       <height>41</height>
      </rect>
@@ -60,9 +41,9 @@
    <widget class="QLineEdit" name="newUserPassword">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>270</y>
-      <width>311</width>
+      <x>540</x>
+      <y>250</y>
+      <width>241</width>
       <height>41</height>
      </rect>
     </property>
@@ -70,6 +51,12 @@
      <font>
       <pointsize>14</pointsize>
      </font>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(244, 228, 255)</string>
     </property>
     <property name="echoMode">
      <enum>QLineEdit::Password</enum>
@@ -81,8 +68,8 @@
    <widget class="QPushButton" name="signUpButton">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>350</y>
+      <x>550</x>
+      <y>330</y>
       <width>101</width>
       <height>41</height>
      </rect>
@@ -106,8 +93,8 @@ color: rgb(255, 255, 255);</string>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>210</y>
+      <x>430</x>
+      <y>190</y>
       <width>101</width>
       <height>21</height>
      </rect>
@@ -126,7 +113,7 @@ color: rgb(255, 255, 255);</string>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>540</x>
       <y>70</y>
       <width>611</width>
       <height>121</height>
@@ -140,7 +127,7 @@ color: rgb(255, 255, 255);</string>
      </font>
     </property>
     <property name="text">
-     <string>SIGN UP FOR NEW ACCOUNT</string>
+     <string>SIGN UP</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_4">
@@ -159,8 +146,8 @@ color: rgb(255, 255, 255);</string>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>280</y>
+      <x>440</x>
+      <y>270</y>
       <width>91</width>
       <height>16</height>
      </rect>
@@ -179,9 +166,9 @@ color: rgb(255, 255, 255);</string>
    <widget class="QLineEdit" name="newUserName">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>200</y>
-      <width>311</width>
+      <x>540</x>
+      <y>180</y>
+      <width>241</width>
       <height>41</height>
      </rect>
     </property>
@@ -191,33 +178,47 @@ color: rgb(255, 255, 255);</string>
      </font>
     </property>
     <property name="autoFillBackground">
-     <bool>true</bool>
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(244, 228, 255)</string>
     </property>
     <property name="text">
      <string/>
+    </property>
+    <property name="frame">
+     <bool>true</bool>
+    </property>
+    <property name="cursorPosition">
+     <number>0</number>
+    </property>
+    <property name="dragEnabled">
+     <bool>false</bool>
     </property>
     <property name="placeholderText">
      <string> Enter new name</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_6">
+   <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>60</y>
-      <width>531</width>
-      <height>431</height>
+      <x>0</x>
+      <y>10</y>
+      <width>851</width>
+      <height>541</height>
      </rect>
     </property>
     <property name="text">
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>../../../../Downloads/fa4daed5-4f71-419d-9a3a-d2a2429d5731.jpg</pixmap>
+     <pixmap>../../../../Downloads/signup3.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
     </property>
    </widget>
    <zorder>label_5</zorder>
-   <zorder>label_6</zorder>
    <zorder>loginButton</zorder>
    <zorder>newUserPassword</zorder>
    <zorder>signUpButton</zorder>
@@ -232,7 +233,7 @@ color: rgb(255, 255, 255);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>850</width>
+     <width>849</width>
      <height>26</height>
     </rect>
    </property>
