@@ -23,8 +23,8 @@ class SignUp_w(QMainWindow):
 
     def show_error_name_window(self):
         error_name = QMessageBox()
-        error_name.setIcon(QMessageBox.Icon.Warning)
-        error_name.setText("ALREADY HAVE THIS NAME ")
+        error_name.setIcon(QMessageBox.Icon.Critical)
+        error_name.setText("SIGN UP FAIL! \n ALREADY HAVE THIS NAME ")
         error_name.setWindowTitle("SignUp Error")
         error_name.exec()
 

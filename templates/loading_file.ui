@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>850</width>
+    <width>820</width>
     <height>607</height>
    </rect>
   </property>
@@ -111,6 +111,9 @@ border-radius:14px;
     <property name="frame">
      <bool>false</bool>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
     <property name="readOnly">
      <bool>true</bool>
     </property>
@@ -128,7 +131,7 @@ border-radius:14px;
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>../../../../Downloads/3a012cb3442a1e9e35cc2939b6171ac9.jpg</pixmap>
+     <pixmap>../../../../Downloads/cad9cd16d72f5696d2d2d9dc9f937b99.jpg</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -163,7 +166,7 @@ border-radius:14px;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>850</width>
+     <width>820</width>
      <height>26</height>
     </rect>
    </property>

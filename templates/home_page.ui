@@ -37,9 +37,9 @@
    <widget class="QPushButton" name="chooseFileButton">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>160</x>
       <y>450</y>
-      <width>131</width>
+      <width>151</width>
       <height>41</height>
      </rect>
     </property>
@@ -63,8 +63,8 @@ background-color: rgb(85, 85, 255);</string>
      <rect>
       <x>470</x>
       <y>510</y>
-      <width>141</width>
-      <height>41</height>
+      <width>161</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
@@ -85,10 +85,10 @@ background-color: rgb(255, 216, 218)</string>
    <widget class="QPushButton" name="uploadButton">
     <property name="geometry">
      <rect>
-      <x>270</x>
+      <x>250</x>
       <y>510</y>
-      <width>121</width>
-      <height>41</height>
+      <width>141</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
@@ -117,7 +117,7 @@ background-color: rgb(255, 216, 218)</string>
     </property>
     <property name="font">
      <font>
-      <pointsize>11</pointsize>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="cursor">
@@ -130,10 +130,16 @@ background-color: rgb(255, 216, 218)</string>
      <bool>false</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(188, 192, 255);</string>
+     <string notr="true">background-color:rgb(255, 255, 255)</string>
     </property>
     <property name="text">
      <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+    <property name="placeholderText">
+     <string>File's name</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
@@ -150,11 +156,14 @@ background-color: rgb(255, 216, 218)</string>
       <pointsize>11</pointsize>
      </font>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
     <property name="text">
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>../../../../Downloads/3a012cb3442a1e9e35cc2939b6171ac9.jpg</pixmap>
+     <pixmap>../../../../Downloads/cad9cd16d72f5696d2d2d9dc9f937b99.jpg</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>

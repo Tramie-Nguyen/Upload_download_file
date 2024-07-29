@@ -21,13 +21,13 @@ class HomePage_w(QMainWindow):
         self.label.setFont(font)
 
         font2 = QFont()
-        font2.setPointSize(14)
+        font2.setPointSize(16)
         self.label_3.setFont(font2)
         self.label_5.setFont(font2)
 
         font3 = QFont()
         font3.setBold(True)
-        font3.setPointSize(14)
+        font3.setPointSize(17)
         self.chooseFileButton.setFont(font3)
         self.uploadButton.setFont(font3)
         self.downloadButton.setFont(font3)
@@ -60,6 +60,7 @@ class HomePage_w(QMainWindow):
         self.selected_file_path = ""
 
     def click_handler(self):
+        self.selected_file_name = ""
         dialog = QFileDialog()
         dialog.setNameFilter("All files (*)")
         dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
