@@ -25,7 +25,7 @@ class Loading_w(QMainWindow):
         self.fileName2.setDisabled(True)
 
         font2 = QFont()
-        font2.setPointSize(16)
+        font2.setPointSize(18)
         font2.setBold(True)
         self.work.setFont(font2)
 
