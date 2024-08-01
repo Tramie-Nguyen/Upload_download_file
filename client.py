@@ -58,16 +58,17 @@ def handle_login():
 
     if login_result == "Login success":
         login_page.show_success_login_window()
+        home_page2.get_user_name(login_page.userName.text())
         login_page.login_successful.emit()
 
     elif login_result == "Wrong password":
-        login_page.userPassword.setText("")
-        login_page.userName.setText("")
         login_page.show_wrong_password_window()
-    else:
         login_page.userPassword.setText("")
         login_page.userName.setText("")
+    else:
         login_page.show_error_login_window()
+        login_page.userPassword.setText("")
+        login_page.userName.setText("")
 
 
 def handle_sign_up():
@@ -181,7 +182,7 @@ def upload_file(file_path, file_name):
     merge_result = client_s.recv(SIZE).decode(FORMAT)
 
     if merge_result == "SUCCESS":
-        home_page2.append_file(unique_name)
+        home_page2.append_file(unique_name, login_page.userName.text())
         time.sleep(2)
         stack_widget.setCurrentIndex(2)
 

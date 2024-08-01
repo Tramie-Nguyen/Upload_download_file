@@ -17,7 +17,7 @@ SIZE = 1024
 SERVER_DATA_PATH = "Server_data"
 
 
-db_message, user_col = connect_database()
+db_message, user_col, files_col = connect_database()
 print(db_message)
 
 

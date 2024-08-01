@@ -3,15 +3,14 @@ from PyQt6 import uic
 from PyQt6.QtWidgets import QMainWindow, QListView, QMessageBox, QFileDialog
 from PyQt6.QtCore import QStringListModel, Qt
 from PyQt6.QtGui import QFont
+from db import connect_database
 
-
-FORMAT = "utf-8"
-SIZE = 1024
+db_message, user_col, files_col = connect_database()
 SERVER_DATA_PATH = "Server_data"
-CLIENT_DATA_PATH = "Client_data"
 
 
 class HomePage_w(QMainWindow):
+
     def __init__(self):
         super(HomePage_w, self).__init__()
         uic.loadUi("templates/home_page.ui", self)
@@ -36,7 +35,6 @@ class HomePage_w(QMainWindow):
         self.upload_list = self.findChild(QListView, "upload_list")
         self.model_upload = QStringListModel()
         self.upload_list.setModel(self.model_upload)
-        self.load_initial_server_data_files()
         self.upload_list.setVerticalScrollBarPolicy(
             Qt.ScrollBarPolicy.ScrollBarAlwaysOn
         )
@@ -78,15 +76,19 @@ class HomePage_w(QMainWindow):
             print("User canceled selecting file")
             self.choose_file = False
 
-    def load_initial_server_data_files(self):
-        server_file_names = self.get_file_names(SERVER_DATA_PATH)
-        self.model_upload.setStringList(server_file_names)
+    def get_user_name(self, user_name):
+        self.load_initial_server_data_files(user_name)
 
-    def get_file_names(self, folder_path):
-        file_names = []
-        for file_name in os.listdir(folder_path):
-            if os.path.isfile(os.path.join(folder_path, file_name)):
-                file_names.append(file_name)
+    def load_initial_server_data_files(self, user_name):
+        print(f"User name: {user_name}")
+        user_file_names = self.get_user_files(user_name)
+        self.model_upload.setStringList(user_file_names)
+
+    def get_user_files(self, user_name):
+        # Query the database for files with the owner matching the user_name
+        query = {"owner": user_name}
+        cursor = files_col.find(query)
+        file_names = [file["file's name"] for file in cursor]
         return file_names
 
     def handle_upload_list_click(self, index):
@@ -97,10 +99,14 @@ class HomePage_w(QMainWindow):
         self.clicked_file = True
         self.choose_file = False
 
-    def append_file(self, file_name):
+    def append_file(self, file_name, owner):
         current_files = self.model_upload.stringList()
         current_files.append(file_name)
         self.model_upload.setStringList(current_files)
+
+        # Insert a new document into the files collection in the database
+        file_document = {"file's name": file_name, "owner": owner}
+        files_col.insert_one(file_document)
 
     def append_downloaded_file(self, file_name):
         current_downloaded_files = self.model_download.stringList()
