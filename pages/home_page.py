@@ -49,7 +49,7 @@ class HomePage_w(QMainWindow):
         )
 
         # Connect buttons
-        self.chooseFileButton.clicked.connect(self.click_handler)
+        self.chooseFileButton.clicked.connect(self.choose_file_handler)
 
         # Connect the click event of the upload list to the handler
         self.upload_list.clicked.connect(self.handle_upload_list_click)
@@ -58,7 +58,22 @@ class HomePage_w(QMainWindow):
         self.selected_file_name = ""
         self.selected_file_path = ""
 
-    def click_handler(self):
+    def get_user_name(self, user_name):
+        self.load_initial_server_data_files(user_name)
+
+    def load_initial_server_data_files(self, user_name):
+        print(f"User name: {user_name}")
+        user_file_names = self.get_user_files(user_name)
+        self.model_upload.setStringList(user_file_names)
+
+    def get_user_files(self, user_name):
+        # Query the database for files with the owner matching the user_name
+        query = {"owner": user_name}
+        cursor = files_col.find(query)
+        file_names = [file["file's name"] for file in cursor]
+        return file_names
+
+    def choose_file_handler(self):
         self.selected_file_name = ""
         dialog = QFileDialog()
         dialog.setNameFilter("All files (*)")
@@ -77,21 +92,6 @@ class HomePage_w(QMainWindow):
         else:
             print("User canceled selecting file")
             self.choose_file = False
-
-    def get_user_name(self, user_name):
-        self.load_initial_server_data_files(user_name)
-
-    def load_initial_server_data_files(self, user_name):
-        print(f"User name: {user_name}")
-        user_file_names = self.get_user_files(user_name)
-        self.model_upload.setStringList(user_file_names)
-
-    def get_user_files(self, user_name):
-        # Query the database for files with the owner matching the user_name
-        query = {"owner": user_name}
-        cursor = files_col.find(query)
-        file_names = [file["file's name"] for file in cursor]
-        return file_names
 
     def handle_upload_list_click(self, index):
         file_name = self.model_upload.data(index, Qt.ItemDataRole.DisplayRole)
