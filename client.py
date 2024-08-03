@@ -98,40 +98,26 @@ def handle_sign_up():
 
 def download_click_handler():
     if home_page2.clicked_file == False:  # chưa chọn file
-        if home_page2.fileName.text().strip():  # ten file lung tung hoac ko ton tai
-            home_page2.file_name_not_exist(home_page2.fileName.text())
-            home_page2.fileName.setText("")
-            return
-        elif home_page2.choose_file == False:
+        if home_page2.choose_file == False:
             home_page2.show_error_choose_file_to_download()
             return
         else:
             home_page2.procedure_error()  # request ko hop le
             return
 
-    origin_file_name = home_page2.selected_file_name
+    base_name = home_page2.selected_file_name
     valid_file_name = False
 
     while not valid_file_name:
-        client_file_path, _ = QFileDialog.getSaveFileName(
-            None, "Save File", origin_file_name, "All Files (*)"
-        )
+        client_file_path = QFileDialog.getExistingDirectory(None, "select a folder")
 
         if not client_file_path:
             print("User canceled choose place to store download file")
             return
 
-        client_data_path = os.path.dirname(client_file_path)
-        base_name = os.path.basename(client_file_path)
-
-        if base_name.strip():
-            valid_file_name = True
-        else:
-            home_page2.show_error_file_name()
-
-    print(f"User choose to store in: {client_data_path}")
-    print(f"File name after rename: {base_name}")
-    download_file(base_name, client_data_path)
+    print(f"User choose to store in: {client_file_path}")
+    home_page2.fileName.setDisabled(False)
+    download_file(base_name, client_file_path)
 
 
 def upload_file(file_path, file_name):
@@ -141,13 +127,8 @@ def upload_file(file_path, file_name):
         home_page2.fileName.setText("")
         return
 
-    elif not file_name.strip() and file_path == "":  # chua chon file, ten file rong
+    elif home_page2.choose_file == False:  # chua chon file, ten file rong
         home_page2.show_error_choose_file()
-        home_page2.fileName.setText("")
-        return
-
-    elif file_path == "":  # chua chon file, user nhap ten bua
-        home_page2.file_name_not_exist(file_name)
         home_page2.fileName.setText("")
         return
 
@@ -194,6 +175,7 @@ def upload_file(file_path, file_name):
     home_page2.fileName.setText("")
     home_page2.choose_file = False
     home_page2.selected_file_name = ""
+    home_page2.fileName.setDisabled(True)
 
 
 def divide_file_into_segments(file_path):
@@ -271,7 +253,6 @@ def download_file(file_name, client_path):
 
     print("[RECEIVE ALL SEGMENTS]")
     merge_result = merge_segments_into_file(segments, unique_name, client_path)
-
     if merge_result == "SUCCESS":
         home_page2.append_downloaded_file(unique_name)
         home_page2.fileName.setText("")
@@ -285,6 +266,7 @@ def download_file(file_name, client_path):
 
     home_page2.clicked_file = False
     home_page2.selected_file_name = ""
+    home_page2.fileName.setDisabled(False)
 
 
 def recv_segment(num_of_segments, segments):

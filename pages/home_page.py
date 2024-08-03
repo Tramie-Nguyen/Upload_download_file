@@ -14,6 +14,7 @@ class HomePage_w(QMainWindow):
     def __init__(self):
         super(HomePage_w, self).__init__()
         uic.loadUi("templates/home_page.ui", self)
+        self.fileName.setDisabled(True)
         font = QFont()
         font.setBold(True)
         font.setPointSize(25)
@@ -71,6 +72,7 @@ class HomePage_w(QMainWindow):
             print("fileName:", file_name)
             self.choose_file = True
             self.clicked_file = False
+            self.fileName.setDisabled(False)
 
         else:
             print("User canceled selecting file")
