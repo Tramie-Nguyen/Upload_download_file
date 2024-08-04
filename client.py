@@ -106,14 +106,12 @@ def download_click_handler():
             return
 
     base_name = home_page2.selected_file_name
-    valid_file_name = False
 
-    while not valid_file_name:
-        client_file_path = QFileDialog.getExistingDirectory(None, "select a folder")
+    client_file_path = QFileDialog.getExistingDirectory(None, "select a folder")
 
-        if not client_file_path:
-            print("User canceled choose place to store download file")
-            return
+    if not client_file_path:
+        print("User canceled choose place to store download file")
+        return
 
     print(f"User choose to store in: {client_file_path}")
     home_page2.fileName.setDisabled(False)

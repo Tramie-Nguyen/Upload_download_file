@@ -15,6 +15,7 @@ class HomePage_w(QMainWindow):
         super(HomePage_w, self).__init__()
         uic.loadUi("templates/home_page.ui", self)
         self.fileName.setDisabled(True)
+        self.download_list.setDisabled(True)
         font = QFont()
         font.setBold(True)
         font.setPointSize(25)
