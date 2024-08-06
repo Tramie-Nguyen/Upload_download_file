@@ -163,4 +163,5 @@ class HomePage_w(QMainWindow):
         error_dialog.setIcon(QMessageBox.Icon.Critical)
         error_dialog.setText("Invalid request ")
         error_dialog.setWindowTitle("Procedure error")
+        self.fileName.setText("")
         error_dialog.exec()

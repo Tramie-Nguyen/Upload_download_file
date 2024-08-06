@@ -103,6 +103,10 @@ def download_click_handler():
             return
         else:
             home_page2.procedure_error()  # request ko hop le
+            home_page2.fileName.setDisabled(True)
+            home_page2.selected_file_path = ""
+            home_page2.selected_file_name = ""
+            home_page2.choose_file = False
             return
 
     base_name = home_page2.selected_file_name
@@ -123,6 +127,9 @@ def upload_file(file_path, file_name):
     if home_page2.clicked_file == True:
         home_page2.procedure_error()
         home_page2.fileName.setText("")
+        home_page2.selected_file_name = ""
+        home_page2.selected_file_path = ""
+        home_page2.clicked_file = False
         return
 
     elif home_page2.choose_file == False:  # chua chon file, ten file rong
