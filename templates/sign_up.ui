@@ -17,7 +17,7 @@
    <widget class="QPushButton" name="loginButton">
     <property name="geometry">
      <rect>
-      <x>450</x>
+      <x>470</x>
       <y>390</y>
       <width>321</width>
       <height>41</height>
@@ -41,7 +41,7 @@
    <widget class="QLineEdit" name="newUserPassword">
     <property name="geometry">
      <rect>
-      <x>540</x>
+      <x>560</x>
       <y>250</y>
       <width>241</width>
       <height>41</height>
@@ -68,7 +68,7 @@
    <widget class="QPushButton" name="signUpButton">
     <property name="geometry">
      <rect>
-      <x>550</x>
+      <x>580</x>
       <y>330</y>
       <width>101</width>
       <height>41</height>
@@ -93,7 +93,7 @@ color: rgb(255, 255, 255);</string>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>430</x>
+      <x>450</x>
       <y>190</y>
       <width>101</width>
       <height>21</height>
@@ -113,7 +113,7 @@ color: rgb(255, 255, 255);</string>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>540</x>
+      <x>560</x>
       <y>70</y>
       <width>611</width>
       <height>121</height>
@@ -146,8 +146,8 @@ color: rgb(255, 255, 255);</string>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>270</y>
+      <x>460</x>
+      <y>260</y>
       <width>91</width>
       <height>16</height>
      </rect>
@@ -166,7 +166,7 @@ color: rgb(255, 255, 255);</string>
    <widget class="QLineEdit" name="newUserName">
     <property name="geometry">
      <rect>
-      <x>540</x>
+      <x>560</x>
       <y>180</y>
       <width>241</width>
       <height>41</height>
